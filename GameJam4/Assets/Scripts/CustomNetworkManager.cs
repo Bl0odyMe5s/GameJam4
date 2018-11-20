@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class CustomNetworkManager : NetworkManager {
+public class CustomNetworkManager : Prototype.NetworkLobby.LobbyManager {
 
     private static CustomNetworkManager _instance;
     public static CustomNetworkManager instance
@@ -18,6 +18,7 @@ public class CustomNetworkManager : NetworkManager {
     public static string playerName = "NoName";
 
     private GameStateManager gameStateManager;
+    public GameObject alienPrefab;
     
     void Awake()
     {
@@ -71,8 +72,7 @@ public class CustomNetworkManager : NetworkManager {
     {
         if(!gameStateManager.hasAlienSelected)
         {
-            Transform spawnPos = GetStartPosition();
-            GameObject player = Instantiate(playerPrefab, spawnPos.position, spawnPos.rotation);
+            GameObject player = Instantiate(alienPrefab, Vector3.zero, Quaternion.identity);
             NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
             gameStateManager.hasAlienSelected = true;
         }
