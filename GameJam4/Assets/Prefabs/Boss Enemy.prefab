@@ -59,6 +59,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4402237365034314}
+  - component: {fileID: 95774556032340460}
   m_Layer: 0
   m_Name: Boss Enemy
   m_TagString: Untagged
@@ -313,13 +314,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1980003679852374}
-  m_LocalRotation: {x: -0.55049074, y: -0.44439033, z: -0.5814507, w: 0.4017367}
-  m_LocalPosition: {x: -0.35587662, y: -4.7982755, z: -2.4953954}
+  m_LocalRotation: {x: -0.6030554, y: -0.391415, z: -0.6277467, w: 0.29841676}
+  m_LocalPosition: {x: -0.24, y: -4.564, z: -2.62}
   m_LocalScale: {x: 0.6, y: 0.96, z: 0.6}
   m_Children: []
   m_Father: {fileID: 4402237365034314}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: -112.805, y: 30.816986, z: 3.9579926}
+  m_LocalEulerAnglesHint: {x: -121.642, y: -86.31, z: -10.703003}
 --- !u!4 &4027781119160940
 Transform:
   m_ObjectHideFlags: 1
@@ -366,7 +367,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1348466710327076}
   m_LocalRotation: {x: 0.020257337, y: -0.92537606, z: 0.0924897, w: 0.36703473}
-  m_LocalPosition: {x: 1.3462441, y: -4.8323483, z: -0.46953607}
+  m_LocalPosition: {x: 1.295, y: -4.989, z: -0.481}
   m_LocalScale: {x: 0.35, y: 0.88, z: 0.38}
   m_Children: []
   m_Father: {fileID: 4402237365034314}
@@ -378,21 +379,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1284860174024704}
-  m_LocalRotation: {x: -0.38126907, y: -0.85701174, z: -0.14269981, w: 0.31591386}
-  m_LocalPosition: {x: -1.8284369, y: -5.0491233, z: -2.5785224}
+  m_LocalRotation: {x: -0.04957863, y: -0.9160294, z: -0.079040155, w: 0.3901086}
+  m_LocalPosition: {x: -1.024, y: -4.923, z: -2.752}
   m_LocalScale: {x: 0.35, y: 0.88, z: 0.38}
   m_Children: []
   m_Father: {fileID: 4402237365034314}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -10.573001, y: -134.022, z: 1.7}
 --- !u!4 &4402237365034314
 Transform:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1154229467102350}
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.01, y: 5.7, z: 0.04}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4027781119160940}
@@ -411,7 +412,7 @@ Transform:
   - {fileID: 4535486109734608}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4535486109734608
 Transform:
   m_ObjectHideFlags: 1
@@ -457,13 +458,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1101056283447790}
-  m_LocalRotation: {x: 0.13510527, y: -0.48309374, z: 0.86474955, w: 0.023984652}
-  m_LocalPosition: {x: 1.1249154, y: -4.5146747, z: -1.2775812}
+  m_LocalRotation: {x: 0.13574483, y: -0.5080032, z: 0.8503553, w: 0.020050945}
+  m_LocalPosition: {x: 1.1249154, y: -4.59, z: -1.2775812}
   m_LocalScale: {x: 0.6, y: 0.96, z: 0.6}
   m_Children: []
   m_Father: {fileID: 4402237365034314}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 112, y: -30, z: 3.9579926}
+  m_LocalEulerAnglesHint: {x: 119.61, y: -154.785, z: 12.128998}
 --- !u!4 &4696403159093906
 Transform:
   m_ObjectHideFlags: 1
@@ -1314,6 +1315,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!95 &95774556032340460
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1154229467102350}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d8db781643e2a504a851993c3ce2e54d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!136 &136052207743920186
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -1858,7 +1877,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0.9, z: 0}
   m_Axis: {x: 0, y: -1, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.14411458, y: 0.5926878, z: -0.036480486}
+  m_ConnectedAnchor: {x: -0.15407516, y: 0.5665003, z: 0.012274206}
   serializedVersion: 2
   m_SwingAxis: {x: 0, y: 1, z: 1}
   m_TwistLimitSpring:
