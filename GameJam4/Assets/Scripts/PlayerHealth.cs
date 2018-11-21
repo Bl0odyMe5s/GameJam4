@@ -53,6 +53,7 @@ public class PlayerHealth : NetworkBehaviour
 
         health = currentHealth;
 
-        healthText.text = "Health: " + currentHealth;
+        if(isLocalPlayer)
+            healthText.text = "Health: " + currentHealth;
     }
 }

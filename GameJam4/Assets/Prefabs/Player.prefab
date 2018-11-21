@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 114525619775416692}
   - component: {fileID: 114605574761942930}
   - component: {fileID: 114418903857085468}
+  - component: {fileID: 114839705601955512}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -270,7 +271,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4092404398775666}
-  - component: {fileID: 114706205487752326}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -1258,37 +1258,6 @@ MonoBehaviour:
   radius: 0.05
   offset: {x: 0, y: 0, z: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &114706205487752326
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1934334418376042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3d4a5826f893bd4a8fbccc8ec04903b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fireButton: 323
-  reloadButton: 114
-  automaticFire: 1
-  numberOfShotsPerVolley: 1
-  numberOfVolleys: 1
-  delayBetweenShots: 0.05
-  delayBetweenVolleys: 0
-  reloadTime: 3
-  bulletsPerMagazine: 60
-  maxRange: 1000
-  damage: 2
-  weaponNozzle: {fileID: 4547586196868382}
-  shotColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  shootingSounds:
-  - {fileID: 8300000, guid: 42e65e088b3f4374e851b8dbd38f3df9, type: 3}
-  reloadingSound: {fileID: 8300000, guid: 5897aeed9b676024fbb8c694b421a861, type: 3}
-  humanBloodFX: {fileID: 0}
-  alienBloodFX: {fileID: 0}
-  wallImpactFX: {fileID: 0}
-  muzzleFlashFX: {fileID: 0}
 --- !u!114 &114759779328833668
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1331,6 +1300,37 @@ MonoBehaviour:
   radius: 0.1
   offset: {x: 0, y: 0, z: 0}
   color: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &114839705601955512
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1388440106233492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3d4a5826f893bd4a8fbccc8ec04903b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireButton: 323
+  reloadButton: 114
+  automaticFire: 1
+  numberOfShotsPerVolley: 1
+  numberOfVolleys: 1
+  delayBetweenShots: 0.05
+  delayBetweenVolleys: 0
+  reloadTime: 3
+  bulletsPerMagazine: 60
+  maxRange: 1000
+  damage: 2
+  weaponNozzle: {fileID: 4547586196868382}
+  shotColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  shootingSounds:
+  - {fileID: 8300000, guid: 42e65e088b3f4374e851b8dbd38f3df9, type: 3}
+  reloadingSound: {fileID: 8300000, guid: 5897aeed9b676024fbb8c694b421a861, type: 3}
+  humanBloodFX: {fileID: 0}
+  alienBloodFX: {fileID: 0}
+  wallImpactFX: {fileID: 0}
+  muzzleFlashFX: {fileID: 0}
 --- !u!114 &114969059728437138
 MonoBehaviour:
   m_ObjectHideFlags: 1

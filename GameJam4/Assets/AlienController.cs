@@ -6,13 +6,17 @@ using UnityEngine.Networking;
 public class AlienController : NetworkBehaviour {
     public GameObject theCamera;
     public GameObject alienObject;
+    public GameObject alienLight;
     GameObject mainCamera;
     public float speed = 4;
 
 	// Use this for initialization
 	void Start () {
         if (!isLocalPlayer)
+        {
             theCamera.SetActive(false);
+            alienLight.SetActive(false);
+        }
         else
             Camera.main.gameObject.SetActive(false);
 	}

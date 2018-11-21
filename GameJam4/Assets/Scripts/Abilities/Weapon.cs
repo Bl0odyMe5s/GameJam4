@@ -169,7 +169,7 @@ public class Weapon : NetworkBehaviour
 			// Check what we hit.
 			if (hit.transform.root.CompareTag("Player"))
 			{
-				var healthScript = hit.transform.GetComponent<PlayerHealth>();
+				var healthScript = hit.transform.root.GetComponent<PlayerHealth>();
                 healthScript.TakeDamage(projectileDamage);
 
 				// Play shot and human body impact FX.
@@ -177,7 +177,7 @@ public class Weapon : NetworkBehaviour
 			}
 			else if (hit.transform.root.CompareTag("Alien"))
             {
-                var healthScript = hit.transform.GetComponent<PlayerHealth>();
+                var healthScript = hit.transform.root.GetComponent<PlayerHealth>();
                 healthScript.TakeDamage(projectileDamage);
 
                 // Play shot and alien body impact FX.
