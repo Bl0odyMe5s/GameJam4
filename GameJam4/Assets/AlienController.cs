@@ -13,6 +13,8 @@ public class AlienController : NetworkBehaviour {
 	void Start () {
         if (!isLocalPlayer)
             theCamera.SetActive(false);
+        else
+            Camera.main.gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame

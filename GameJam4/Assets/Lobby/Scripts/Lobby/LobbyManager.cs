@@ -327,7 +327,6 @@ namespace Prototype.NetworkLobby
                 }
             }
             alienIds.Remove(conn);
-            Debug.Log(alienIds.Count);
         }
 
         public override void OnLobbyServerConnect(NetworkConnection conn)

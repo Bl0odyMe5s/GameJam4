@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 114335497356915484}
   - component: {fileID: 114525619775416692}
   - component: {fileID: 114605574761942930}
+  - component: {fileID: 114418903857085468}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -999,7 +1000,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: ToggleEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  respawnTime: 5
 --- !u!114 &114364996649942312
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1014,6 +1014,18 @@ MonoBehaviour:
   radius: 0.1
   offset: {x: 0, y: 0, z: 0}
   color: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &114418903857085468
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1388440106233492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c85baa43884fbb4798c13c05367ea8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
 --- !u!114 &114472148167511750
 MonoBehaviour:
   m_ObjectHideFlags: 1

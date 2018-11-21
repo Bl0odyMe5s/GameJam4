@@ -18,7 +18,8 @@ public class Player : NetworkBehaviour
 
     void Start()
     {
-        mainCamera = Camera.main.gameObject;
+        if(isLocalPlayer)
+            mainCamera = Camera.main.gameObject;
 
         EnablePlayer();
     }
@@ -26,7 +27,10 @@ public class Player : NetworkBehaviour
     void DisablePlayer()
     {
         if (isLocalPlayer)
+        {
             mainCamera.SetActive(true);
+            GameObject.FindGameObjectWithTag("HealthText").SetActive(false);
+        }
 
         onToggleShared.Invoke(false);
 

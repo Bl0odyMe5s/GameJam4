@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114715481744277726}
   - component: {fileID: 114319398907555466}
   - component: {fileID: 114057572273832372}
+  - component: {fileID: 114376021951048606}
   m_Layer: 0
   m_Name: Alien
   m_TagString: Untagged
@@ -42,7 +43,7 @@ GameObject:
   - component: {fileID: 81752859293055128}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -242,6 +243,18 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
+--- !u!114 &114376021951048606
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1225370732188106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c85baa43884fbb4798c13c05367ea8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
 --- !u!114 &114715481744277726
 MonoBehaviour:
   m_ObjectHideFlags: 1
