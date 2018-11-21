@@ -1490,8 +1490,11 @@ MonoBehaviour:
   shootingRaycastPosition: {fileID: 4975124746563752}
   shotColor: {r: 0.015686274, g: 0.37742585, b: 1, a: 1}
   shootingSounds:
-  - {fileID: 8300000, guid: 42e65e088b3f4374e851b8dbd38f3df9, type: 3}
-  reloadingSound: {fileID: 8300000, guid: 5897aeed9b676024fbb8c694b421a861, type: 3}
+  - {fileID: 8300000, guid: 5b9cbed19fbc2e5458e67bbd08312dfb, type: 3}
+  - {fileID: 8300000, guid: 6a1024211034d364db4849d514ac1d0d, type: 3}
+  - {fileID: 8300000, guid: 0fc23c00be9f49f4fa5f37c3b9629da9, type: 3}
+  - {fileID: 8300000, guid: ae3b3cf92b05a924db247e49b16f67cb, type: 3}
+  reloadingSound: {fileID: 8300000, guid: 9256443d10bbbf240ba5dd7be0c78fd1, type: 3}
   humanBloodFX: {fileID: 0}
   alienBloodFX: {fileID: 0}
   wallImpactFX: {fileID: 0}
