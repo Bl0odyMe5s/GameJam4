@@ -23,9 +23,16 @@ public class Weapon : NetworkBehaviour
 
 	public int damage = 1;
 	[Tooltip("Angle in degrees.")]
-    public float maxDeviationAngle = 3;
+    public float maxDeviationAngle = 1;
 
-	public Transform weaponNozzle;
+	public float muzzleFlashDuration = 0.05f;
+    public float maxMuzzleFlashOffset = 0.15f;
+
+    public float fireLineWidth = 0.05f;
+    public float fireLineFadeTime = 0.05f;
+
+    public Transform weaponNozzle;
+    public Transform shootingRaycastPosition;
 
 	public Color shotColor = Color.yellow;
 
@@ -37,6 +44,7 @@ public class Weapon : NetworkBehaviour
     public GameObject wallImpactFX;
 
     public GameObject muzzleFlashFX;
+	public GameObject fireLineFX;
 
 	public enum HitType { Human, Alien, Wall, None };
 
@@ -120,9 +128,10 @@ public class Weapon : NetworkBehaviour
                 {
                     // Generate random deviation rotation.
                     Quaternion deviation = Quaternion.AngleAxis(Random.Range(-maxDeviationAngle, maxDeviationAngle), Vector3.up);
+                    deviation *= Quaternion.AngleAxis(Random.Range(-maxDeviationAngle, maxDeviationAngle), Vector3.right);
 
                     // Shoot a single projectile.
-					CmdShootOnServer(weaponNozzle.position, deviation * weaponNozzle.forward, damage);
+					CmdShootOnServer(shootingRaycastPosition.position, deviation * shootingRaycastPosition.forward, damage, weaponNozzle.position, weaponNozzle.forward, weaponNozzle.position + Random.insideUnitSphere * maxMuzzleFlashOffset);
                     currentBulletAmount--;
 				}
 				else
@@ -130,22 +139,6 @@ public class Weapon : NetworkBehaviour
 					shooting = false;
 					yield break;
 				}
-
-#if UNITY_EDITOR
-                shootingRay.origin = weaponNozzle.position;
-				shootingRay.direction = weaponNozzle.forward;
-				RaycastHit hit;
-				Vector3 vectorTowardsHit;
-				if (Physics.Raycast(shootingRay, out hit, maxRange))
-				{
-					vectorTowardsHit = hit.point - weaponNozzle.position;
-				}
-				else
-				{
-                    vectorTowardsHit = weaponNozzle.position + weaponNozzle.forward * maxRange;
-				}
-                Debug.DrawRay(weaponNozzle.position, vectorTowardsHit, shotColor, 0.25f, true);
-#endif
 
                 yield return new WaitForSeconds(delayBetweenShots);
             }
@@ -163,11 +156,16 @@ public class Weapon : NetworkBehaviour
 
     // Network functions.
 	[Command]
-    private void CmdShootOnServer(Vector3 position, Vector3 direction, int projectileDamage)
+    private void CmdShootOnServer(Vector3 position, Vector3 direction, int projectileDamage, Vector3 nozzlePos, Vector3 nozzleForward, Vector3 muzzleFlashPosition)
     {
 		RaycastHit hit;
         shootingRay.origin = position;
 		shootingRay.direction = direction;
+
+#if UNITY_EDITOR
+        Vector3 vectorTowardsHit;
+#endif
+
 		if (Physics.Raycast(shootingRay, out hit, maxRange))
 		{
 			// Hit something.
@@ -178,7 +176,7 @@ public class Weapon : NetworkBehaviour
                 healthScript.TakeDamage(projectileDamage);
 
 				// Play shot and human body impact FX.
-				RpcShot(HitType.Human, position);
+				RpcShot(HitType.Human, hit.point, nozzlePos, muzzleFlashPosition);
 			}
 			else if (hit.transform.root.CompareTag("Alien"))
             {
@@ -186,20 +184,32 @@ public class Weapon : NetworkBehaviour
                 healthScript.TakeDamage(projectileDamage);
 
                 // Play shot and alien body impact FX.
-                RpcShot(HitType.Alien, position);
+                RpcShot(HitType.Alien, hit.point, nozzlePos, muzzleFlashPosition);
             }
 			else
 			{
                 // Play shot and object impact FX.
-                RpcShot(HitType.Wall, position);
+                RpcShot(HitType.Wall, hit.point, nozzlePos, muzzleFlashPosition);
 			}
-		}
+
+#if UNITY_EDITOR
+            vectorTowardsHit = hit.point - shootingRaycastPosition.position;
+#endif
+        }
 		else
 		{
             // Didn't hit anything.
             // Play shot FX.
-            RpcShot(HitType.None, position);
+            RpcShot(HitType.None, nozzlePos + nozzleForward * maxRange, nozzlePos, muzzleFlashPosition);
+			
+#if UNITY_EDITOR
+			vectorTowardsHit = shootingRaycastPosition.position + shootingRaycastPosition.forward * maxRange;
+#endif
 		}
+
+#if UNITY_EDITOR
+        Debug.DrawRay(shootingRaycastPosition.position, vectorTowardsHit, shotColor, 0.25f, true);
+#endif
     }
 
 	[Command]
@@ -216,10 +226,22 @@ public class Weapon : NetworkBehaviour
 	}
 
 	[ClientRpc]
-	private void RpcShot(HitType hitType, Vector3 hitPoint)
+	private void RpcShot(HitType hitType, Vector3 hitPoint, Vector3 nozzlePosition, Vector3 muzzleFlashPosition)
 	{
         MyAudioSource.PlayOneShot(shootingSounds[Random.Range(0, shootingSounds.Length)]);
-        // Instantiate(muzzleFlashFX, hitPoint, Quaternion.identity);
+        var muzzleFlashObject = Instantiate(muzzleFlashFX, muzzleFlashPosition, Quaternion.identity);
+        muzzleFlashObject.GetComponent<MuzzleFlash>().InitializeLight(shotColor, muzzleFlashDuration);
+
+		if (hitType == HitType.None)
+		{
+			// Hit nothing.
+		}
+		else
+		{
+            // Hit something.
+            var fireLine = Instantiate(fireLineFX, nozzlePosition, Quaternion.identity);
+            fireLine.GetComponent<FireLine>().InitializeLine(shotColor, nozzlePosition, hitPoint, fireLineWidth, fireLineFadeTime);
+		}
 
 		switch (hitType)
         {

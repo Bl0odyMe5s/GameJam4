@@ -497,7 +497,7 @@ Transform:
   m_GameObject: {fileID: 1870881159985254}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 1, z: 0.5}
   m_Children:
   - {fileID: 4975124746563752}
   m_Father: {fileID: 4521317361667564}
@@ -567,7 +567,7 @@ Transform:
   m_GameObject: {fileID: 1733196567193088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 1, z: 0.5}
   m_Children:
   - {fileID: 4808296876380034}
   m_Father: {fileID: 4521317361667564}
@@ -707,7 +707,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 90
   orthographic: 0
@@ -1445,7 +1445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0.034408808, a: 1}
+  m_Color: {r: 0.015686275, g: 0.37647063, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1510,15 +1510,20 @@ MonoBehaviour:
   bulletsPerMagazine: 60
   maxRange: 1000
   damage: 2
+  maxDeviationAngle: 1
+  muzzleFlashDuration: 0.05
+  maxMuzzleFlashOffset: 0.05
   weaponNozzle: {fileID: 4858120617886082}
-  shotColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  shootingRaycastPosition: {fileID: 4975124746563752}
+  shotColor: {r: 0.015686274, g: 0.37742585, b: 1, a: 1}
   shootingSounds:
   - {fileID: 8300000, guid: 42e65e088b3f4374e851b8dbd38f3df9, type: 3}
   reloadingSound: {fileID: 8300000, guid: 5897aeed9b676024fbb8c694b421a861, type: 3}
   humanBloodFX: {fileID: 0}
   alienBloodFX: {fileID: 0}
   wallImpactFX: {fileID: 0}
-  muzzleFlashFX: {fileID: 0}
+  muzzleFlashFX: {fileID: 1025198318368770, guid: 66fbca4644d961241b07f4668767332f,
+    type: 2}
 --- !u!114 &114969059728437138
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1549,7 +1554,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -1564,7 +1569,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.8
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08

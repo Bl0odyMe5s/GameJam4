@@ -5,16 +5,14 @@ using UnityEngine;
 /// <summary>
 /// Destroys the GameObject this script is attached to after a set delay.
 /// </summary>
-public class DestroyAfterSeconds : MonoBehaviour
+public class DestroyAfterSecondsAttach : MonoBehaviour
 {
-	public float destroyDelay = 5f;
-
-	private void Start()
+	public void StartDestroying(float destroyDelay)
 	{
-		StartCoroutine(Die());
+		StartCoroutine(Die(destroyDelay));
 	}
 
-	private IEnumerator Die()
+	private IEnumerator Die(float destroyDelay)
 	{
 		yield return new WaitForSeconds(destroyDelay);
 		Destroy(gameObject);
