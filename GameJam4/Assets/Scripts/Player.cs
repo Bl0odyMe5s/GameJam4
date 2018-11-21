@@ -63,5 +63,6 @@ public class Player : NetworkBehaviour
     public void Die()
     {
         DisablePlayer();
+        gameObject.SetActive(false);
     }
 }
