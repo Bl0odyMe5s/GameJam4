@@ -14,6 +14,7 @@ public class PlayerHealth : NetworkBehaviour
     private Text healthText;
 
     public static GameObject winTextObj;
+    public static int amountOfMarines;
 
     void Awake()
     {
@@ -32,13 +33,17 @@ public class PlayerHealth : NetworkBehaviour
             winTextObj = GameObject.FindGameObjectWithTag("WinText");
             winTextObj.SetActive(false);
         }
+
+        if(isServer)
+        {
+            RpcSetHealth(health);
+        }
     }
 
     [ServerCallback]
     void OnEnable()
     {
         health = maxHealth;
-        RpcSetHealth(health);
     }
 
     [Server]
@@ -56,6 +61,18 @@ public class PlayerHealth : NetworkBehaviour
         {
             RpcAlienKilled();
             StartCoroutine(ReturnToLobby(4f));
+        }
+
+        if(gameObject.CompareTag("Player") && died)
+        {
+            amountOfMarines--;
+
+            if(amountOfMarines <= 0)
+            {
+                // Marines dead
+                RpcMarinesKilled();
+                StartCoroutine(ReturnToLobby(4f));
+            }
         }
 
         RpcSetHealth(health);
@@ -90,6 +107,16 @@ public class PlayerHealth : NetworkBehaviour
     void RpcAlienKilled()
     {
         winTextObj.GetComponent<Text>().text = "Marines win!";
+        winTextObj.SetActive(true);
+
+        if (healthText != null)
+            healthText.gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    void RpcMarinesKilled()
+    {
+        winTextObj.GetComponent<Text>().text = "Alien wins!";
         winTextObj.SetActive(true);
 
         if (healthText != null)

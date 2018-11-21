@@ -408,6 +408,8 @@ namespace Prototype.NetworkLobby
 
             // Choose an alien
             alienId = alienIds[Random.Range(0, alienIds.Count)];
+            PlayerHealth.amountOfMarines = alienIds.Count - 1;
+            Debug.Log("Amount of marines: " + PlayerHealth.amountOfMarines);
 
             ServerChangeScene(playScene);
         }
