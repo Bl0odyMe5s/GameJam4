@@ -394,7 +394,7 @@ MonoBehaviour:
   m_AutoCreatePlayer: 1
   m_PlayerSpawnMethod: 0
   m_OfflineScene: MainMenu
-  m_OnlineScene: MPGameTest
+  m_OnlineScene: LightNing
   m_SpawnPrefabs: []
   m_CustomConfig: 0
   m_MaxConnections: 4
