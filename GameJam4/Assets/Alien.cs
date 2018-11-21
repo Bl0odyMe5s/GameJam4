@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class Alien : MonoBehaviour {
+public class Alien : NetworkBehaviour {
 
     private const float MOVE_SPEED = 6;
     private const float ROTATE_SPEED = 1;
@@ -15,11 +16,14 @@ public class Alien : MonoBehaviour {
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
-	}
+    }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        if (!isLocalPlayer)
+            return;
+
         MoveAlien();
         AnimateAlien(isWalking);
         Attack();
