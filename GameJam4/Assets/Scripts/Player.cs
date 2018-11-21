@@ -16,6 +16,8 @@ public class Player : NetworkBehaviour
 
     GameObject mainCamera;
 
+    public string playerName;
+
     void Start()
     {
         if(isLocalPlayer)
@@ -37,7 +39,10 @@ public class Player : NetworkBehaviour
         if (isLocalPlayer)
             onToggleLocal.Invoke(false);
         else
+        {
             onToggleRemote.Invoke(false);
+            onToggleLocal.Invoke(false);
+        }
     }
 
     void EnablePlayer()
@@ -50,7 +55,9 @@ public class Player : NetworkBehaviour
         if (isLocalPlayer)
             onToggleLocal.Invoke(true);
         else
+        {
             onToggleRemote.Invoke(true);
+        }
     }
 
     public void Die()

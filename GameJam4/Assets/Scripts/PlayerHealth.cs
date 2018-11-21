@@ -53,7 +53,6 @@ public class PlayerHealth : NetworkBehaviour
 
         if (health <= 0)
             return died;
-
         health -= damage;
         died = health <= 0;
 

@@ -15,4 +15,9 @@ public class AnimationHelper : MonoBehaviour {
     {
         alien.EndAttack();
     }
+
+    public void DoDamage()
+    {
+        alien.DoAttack();
+    }
 }
