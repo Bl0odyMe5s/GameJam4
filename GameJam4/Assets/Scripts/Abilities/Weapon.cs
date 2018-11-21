@@ -22,6 +22,8 @@ public class Weapon : NetworkBehaviour
 	public float maxRange = 1000;
 
 	public int damage = 1;
+	[Tooltip("Angle in degrees.")]
+    public float maxDeviationAngle = 3;
 
 	public Transform weaponNozzle;
 
@@ -116,8 +118,11 @@ public class Weapon : NetworkBehaviour
             {
 				if (currentBulletAmount > 0)
                 {
+                    // Generate random deviation rotation.
+                    Quaternion deviation = Quaternion.AngleAxis(Random.Range(-maxDeviationAngle, maxDeviationAngle), Vector3.up);
+
                     // Shoot a single projectile.
-					CmdShootOnServer(weaponNozzle.position, weaponNozzle.forward, damage);
+					CmdShootOnServer(weaponNozzle.position, deviation * weaponNozzle.forward, damage);
                     currentBulletAmount--;
 				}
 				else
@@ -173,7 +178,7 @@ public class Weapon : NetworkBehaviour
                 healthScript.TakeDamage(projectileDamage);
 
 				// Play shot and human body impact FX.
-				RpcShot(HitType.Human);
+				RpcShot(HitType.Human, position);
 			}
 			else if (hit.transform.root.CompareTag("Alien"))
             {
@@ -181,19 +186,19 @@ public class Weapon : NetworkBehaviour
                 healthScript.TakeDamage(projectileDamage);
 
                 // Play shot and alien body impact FX.
-                RpcShot(HitType.Alien);
+                RpcShot(HitType.Alien, position);
             }
 			else
 			{
                 // Play shot and object impact FX.
-                RpcShot(HitType.Wall);
+                RpcShot(HitType.Wall, position);
 			}
 		}
 		else
 		{
             // Didn't hit anything.
             // Play shot FX.
-            RpcShot(HitType.None);
+            RpcShot(HitType.None, position);
 		}
     }
 
@@ -211,24 +216,27 @@ public class Weapon : NetworkBehaviour
 	}
 
 	[ClientRpc]
-	private void RpcShot(HitType hitType)
+	private void RpcShot(HitType hitType, Vector3 hitPoint)
 	{
         MyAudioSource.PlayOneShot(shootingSounds[Random.Range(0, shootingSounds.Length)]);
-		// Instantiate muzzle flash.
+        // Instantiate(muzzleFlashFX, hitPoint, Quaternion.identity);
 
 		switch (hitType)
         {
             case HitType.Human:
                 // Instantiate human blood FX.
+				// Instantiate(humanBloodFX, hitPoint, Quaternion.identity);
                 break;
             case HitType.Alien:
                 // Instantiate alien blood FX.
+                // Instantiate(alienBloodFX, hitPoint, Quaternion.identity);
                 break;
             case HitType.Wall:
                 // Instantiate wall impact FX.
+                // Instantiate(wallImpactFX, hitPoint, Quaternion.identity);
                 break;
             case HitType.None:
-				// Hot nothing, so no FX.
+				// Hit nothing, so no FX.
                 break;
 		}
 	}
