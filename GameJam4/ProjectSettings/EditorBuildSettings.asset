@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/TestScene.unity
     guid: 5183981a5d2f26649b850102a70e1b32
+  - enabled: 1
+    path: Assets/_Scenes/LightNing/LightNing.unity
+    guid: 0c72ec5ee598caa43959fc671f00f28e
   m_configObjects: {}
