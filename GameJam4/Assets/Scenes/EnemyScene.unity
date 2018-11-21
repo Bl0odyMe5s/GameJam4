@@ -156,19 +156,9 @@ Prefab:
       propertyPath: m_Name
       value: Alien
       objectReference: {fileID: 0}
-    - target: {fileID: 114522579902075002, guid: 772797afa6650c143b70963a85836512,
-        type: 2}
-      propertyPath: hitbox
-      value: 
-      objectReference: {fileID: 15329481}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 772797afa6650c143b70963a85836512, type: 2}
   m_IsPrefabAsset: 0
---- !u!65 &15329481 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: 65384198513116232, guid: 772797afa6650c143b70963a85836512,
-    type: 2}
-  m_PrefabInternal: {fileID: 15329480}
 --- !u!1 &1604169806
 GameObject:
   m_ObjectHideFlags: 0
