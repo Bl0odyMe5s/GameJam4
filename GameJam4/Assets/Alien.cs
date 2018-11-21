@@ -8,9 +8,13 @@ public class Alien : NetworkBehaviour {
 
     private const float MOVE_SPEED = 6;
     private const float ROTATE_SPEED = 3;
+    private const float SOUND_COOLDOWN = 12;
     private bool isWalking, isAttacking;
+    private float soundTimer, timer;
     private Rigidbody rb;
     private Animator animator;
+
+    public AudioSource walkingSound, roarSound, hitSound;
 
     // Use this for initialization
     void Start ()
@@ -28,6 +32,7 @@ public class Alien : NetworkBehaviour {
         MoveAlien();
         AnimateAlien(isWalking);
         PlayAttackAnimation();
+        PlaySounds();
 	}
 
     private void MoveAlien()
@@ -76,10 +81,28 @@ public class Alien : NetworkBehaviour {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             isAttacking = true;
-            
+            hitSound.PlayOneShot(hitSound.clip, Random.Range(0.5f, 1));
         }
 
         animator.SetBool("isAttacking", isAttacking);
+    }
+
+    private void PlaySounds()
+    {
+        soundTimer += Time.deltaTime;
+
+        int randomDecision = Random.Range(0, 1);
+        if (soundTimer >= SOUND_COOLDOWN && randomDecision == 0)
+        {
+            walkingSound.PlayOneShot(walkingSound.clip, Random.Range(0.5f, 1));
+            soundTimer = 0;
+        }
+
+        else if (soundTimer >= SOUND_COOLDOWN && randomDecision == 1)
+        {
+            roarSound.PlayOneShot(roarSound.clip, Random.Range(0.5f, 1));
+            soundTimer = 0;
+        }
     }
 
     public void EndAttack()
