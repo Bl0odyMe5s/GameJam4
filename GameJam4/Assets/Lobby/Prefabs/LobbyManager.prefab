@@ -383,7 +383,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &140634
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,7 +505,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &146438
 GameObject:
   m_ObjectHideFlags: 1
@@ -869,7 +869,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &181906
 GameObject:
   m_ObjectHideFlags: 1
@@ -3203,7 +3203,7 @@ MonoBehaviour:
   m_OfflineScene: NewMenu
   m_OnlineScene: 
   m_SpawnPrefabs:
-  - {fileID: 1225370732188106, guid: 5af609c71cd9291418cba71d301aa8d7, type: 2}
+  - {fileID: 1154229467102350, guid: 772797afa6650c143b70963a85836512, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
@@ -3260,17 +3260,17 @@ MonoBehaviour:
   isNetworkActive: 0
   matchMaker: {fileID: 0}
   m_ShowLobbyGUI: 0
-  m_MaxPlayers: 3
-  m_MaxPlayersPerConnection: 2
+  m_MaxPlayers: 10
+  m_MaxPlayersPerConnection: 1
   m_MinPlayers: 1
   m_LobbyPlayerPrefab: {fileID: 11487034, guid: ad727d7e1462ecc4f83c898ecc501997,
     type: 2}
   m_GamePlayerPrefab: {fileID: 1388440106233492, guid: f41dc030902723c4da467bde80caceec,
     type: 2}
   m_LobbyScene: NewMenu
-  m_PlayScene: MPGameTest
+  m_PlayScene: LightNing
   lobbySlots: []
-  alienPrefabber: {fileID: 1225370732188106, guid: 5af609c71cd9291418cba71d301aa8d7,
+  alienPrefabber: {fileID: 1154229467102350, guid: 772797afa6650c143b70963a85836512,
     type: 2}
   prematchCountdown: 3
   topPanel: {fileID: 11424994}
@@ -5140,7 +5140,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -440.00012}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 440}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &22455308
