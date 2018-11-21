@@ -999,7 +999,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: ToggleEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  respawnTime: 5
 --- !u!114 &114364996649942312
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1262,16 +1261,21 @@ MonoBehaviour:
   automaticFire: 1
   numberOfShotsPerVolley: 1
   numberOfVolleys: 1
-  delayBetweenShots: 0.1
+  delayBetweenShots: 0.05
   delayBetweenVolleys: 0
   reloadTime: 3
   bulletsPerMagazine: 60
   maxRange: 1000
+  damage: 2
   weaponNozzle: {fileID: 4547586196868382}
   shotColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  shootSound: {fileID: 0}
-  reloadSound: {fileID: 0}
-  playSoundAt: 0
+  shootingSounds:
+  - {fileID: 8300000, guid: 42e65e088b3f4374e851b8dbd38f3df9, type: 3}
+  reloadingSound: {fileID: 8300000, guid: 5897aeed9b676024fbb8c694b421a861, type: 3}
+  humanBloodFX: {fileID: 0}
+  alienBloodFX: {fileID: 0}
+  wallImpactFX: {fileID: 0}
+  muzzleFlashFX: {fileID: 0}
 --- !u!114 &114759779328833668
 MonoBehaviour:
   m_ObjectHideFlags: 1

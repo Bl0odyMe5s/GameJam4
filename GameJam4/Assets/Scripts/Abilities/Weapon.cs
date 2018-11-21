@@ -117,7 +117,7 @@ public class Weapon : NetworkBehaviour
 				if (currentBulletAmount > 0)
                 {
                     // Shoot a single projectile.
-					CmdShootOnServer(weaponNozzle.position, weaponNozzle.forward);
+					CmdShootOnServer(weaponNozzle.position, weaponNozzle.forward, damage);
                     currentBulletAmount--;
 				}
 				else
@@ -158,7 +158,7 @@ public class Weapon : NetworkBehaviour
 
     // Network functions.
 	[Command]
-    private void CmdShootOnServer(Vector3 position, Vector3 direction)
+    private void CmdShootOnServer(Vector3 position, Vector3 direction, int projectileDamage)
     {
 		RaycastHit hit;
         shootingRay.origin = position;
@@ -169,16 +169,16 @@ public class Weapon : NetworkBehaviour
 			// Check what we hit.
 			if (hit.transform.root.CompareTag("Player"))
 			{
-				// hit.transform.GetComponent<PlayerHealth>();
-				// Reduce health.
+				var healthScript = hit.transform.GetComponent<PlayerHealth>();
+                healthScript.TakeDamage(projectileDamage);
 
 				// Play shot and human body impact FX.
 				RpcShot(HitType.Human);
 			}
 			else if (hit.transform.root.CompareTag("Alien"))
-			{
-                // hit.transform.GetComponent<PlayerHealth>();
-                // Reduce health.
+            {
+                var healthScript = hit.transform.GetComponent<PlayerHealth>();
+                healthScript.TakeDamage(projectileDamage);
 
                 // Play shot and alien body impact FX.
                 RpcShot(HitType.Alien);
@@ -213,7 +213,7 @@ public class Weapon : NetworkBehaviour
 	[ClientRpc]
 	private void RpcShot(HitType hitType)
 	{
-        MyAudioSource.PlayOneShot(shootingSounds[Random.Range(0, shootingSounds.Length - 1)]);
+        MyAudioSource.PlayOneShot(shootingSounds[Random.Range(0, shootingSounds.Length)]);
 		// Instantiate muzzle flash.
 
 		switch (hitType)
