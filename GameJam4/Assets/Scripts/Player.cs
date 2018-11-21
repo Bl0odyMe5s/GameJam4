@@ -42,7 +42,6 @@ public class Player : NetworkBehaviour
 
     void EnablePlayer()
     {
-        Debug.Log("called");
         if (isLocalPlayer)
             mainCamera.SetActive(false);
 
