@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.Collections;
+using Prototype.NetworkLobby;
 
 public class PlayerHealth : NetworkBehaviour
 {
@@ -11,6 +13,8 @@ public class PlayerHealth : NetworkBehaviour
 
     private Text healthText;
 
+    public static GameObject winTextObj;
+
     void Awake()
     {
         player = GetComponent<Player>();
@@ -19,7 +23,15 @@ public class PlayerHealth : NetworkBehaviour
     void Start()
     {
         if (isLocalPlayer)
+        {
             healthText = GameObject.FindGameObjectWithTag("HealthText").GetComponent<Text>();
+        }
+
+        if (winTextObj == null)
+        {
+            winTextObj = GameObject.FindGameObjectWithTag("WinText");
+            winTextObj.SetActive(false);
+        }
     }
 
     [ServerCallback]
@@ -40,6 +52,12 @@ public class PlayerHealth : NetworkBehaviour
         health -= damage;
         died = health <= 0;
 
+        if (gameObject.CompareTag("Alien") && died)
+        {
+            RpcAlienKilled();
+            StartCoroutine(ReturnToLobby(4f));
+        }
+
         RpcSetHealth(health);
 
         return died;
@@ -49,11 +67,32 @@ public class PlayerHealth : NetworkBehaviour
     void RpcSetHealth(int currentHealth)
     {
         if (currentHealth <= 0)
-            player.Die();
+        {
+            currentHealth = 0;
+            if(player != null)
+                player.Die();
+        }
 
         health = currentHealth;
 
-        if(isLocalPlayer)
+        if(healthText != null)
             healthText.text = "Health: " + currentHealth;
+    }
+
+    [Server]
+    private IEnumerator ReturnToLobby(float timeToSwitch)
+    {
+        yield return new WaitForSeconds(timeToSwitch);
+        LobbyManager.s_Singleton.ServerReturnToLobby();
+    }
+
+    [ClientRpc]
+    void RpcAlienKilled()
+    {
+        winTextObj.GetComponent<Text>().text = "Marines win!";
+        winTextObj.SetActive(true);
+
+        if (healthText != null)
+            healthText.gameObject.SetActive(false);
     }
 }

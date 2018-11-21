@@ -326,6 +326,7 @@ namespace Prototype.NetworkLobby
                     p.ToggleJoinButton(numPlayers >= minPlayers);
                 }
             }
+
             alienIds.Remove(conn);
         }
 
