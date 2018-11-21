@@ -6,7 +6,7 @@ public class Alien : MonoBehaviour {
 
     private const float MOVE_SPEED = 6;
     private const float ROTATE_SPEED = 1;
-    private bool isWalking;
+    private bool isWalking, isAttacking;
     private Rigidbody rb;
     private Animator animator;
 
@@ -22,6 +22,7 @@ public class Alien : MonoBehaviour {
     {
         MoveAlien();
         AnimateAlien(isWalking);
+        Attack();
 	}
 
     private void MoveAlien()
@@ -61,5 +62,21 @@ public class Alien : MonoBehaviour {
     private void AnimateAlien(bool walkingOrNot)
     {
        animator.SetBool("isWalking", walkingOrNot);
+    }
+
+    private void Attack()
+    {
+        //When the alien presses space, start attack.
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isAttacking = true;
+        }
+
+        animator.SetBool("isAttacking", isAttacking);
+    }
+
+    public void EndAttack()
+    {
+        isAttacking = false;
     }
 }
