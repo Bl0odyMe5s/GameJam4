@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 public class AlienController : NetworkBehaviour {
     public GameObject theCamera;
     public GameObject alienObject;
+    GameObject mainCamera;
     public float speed = 4;
 
 	// Use this for initialization
