@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(AudioSource))]
-public class Weapon : MonoBehaviour
+public class Weapon : NetworkBehaviour
 {
     public KeyCode fireButton = KeyCode.Mouse0;
     public KeyCode reloadButton = KeyCode.R;
@@ -21,19 +21,27 @@ public class Weapon : MonoBehaviour
 
 	public float maxRange = 1000;
 
+	public int damage = 1;
+
 	public Transform weaponNozzle;
 
 	public Color shotColor = Color.yellow;
 
-	public AudioClip shootSound;
-	public AudioClip reloadSound;
+	public AudioClip[] shootingSounds;
+	public AudioClip reloadingSound;
 
-	public enum PlaySound { EveryShot, EveryVolley, EverySeconds };
-	public PlaySound playSoundAt = PlaySound.EveryShot;
+    public GameObject humanBloodFX;
+    public GameObject alienBloodFX;
+    public GameObject wallImpactFX;
+
+    public GameObject muzzleFlashFX;
+
+	public enum HitType { Human, Alien, Wall, None };
 
 	private bool shooting = false;
 	private bool reloading = false;
-	private Ray shootingRay = new Ray();
+
+    private Ray shootingRay = new Ray();
 
 	private AudioSource myAudioSource = null;
 	private AudioSource MyAudioSource
@@ -55,6 +63,9 @@ public class Weapon : MonoBehaviour
 
 	public void Update()
 	{
+		if (!isLocalPlayer)
+			return;
+		
 		if ((Input.GetKey(fireButton) && automaticFire) || Input.GetKeyDown(fireButton))
 		{
 			if (!shooting && !reloading)
@@ -84,6 +95,7 @@ public class Weapon : MonoBehaviour
 
     private IEnumerator ReloadRoutine()
     {
+        CmdReloadOnServer();
 		yield return new WaitForSeconds(reloadTime);
 		currentBulletAmount = bulletsPerMagazine;
         reloading = false;
@@ -105,7 +117,7 @@ public class Weapon : MonoBehaviour
 				if (currentBulletAmount > 0)
                 {
                     // Shoot a single projectile.
-                    ShootOnServer(weaponNozzle.position, weaponNozzle.forward);
+					CmdShootOnServer(weaponNozzle.position, weaponNozzle.forward);
                     currentBulletAmount--;
 				}
 				else
@@ -115,16 +127,19 @@ public class Weapon : MonoBehaviour
 				}
 
 #if UNITY_EDITOR
-                // shootingRay.origin = weaponNozzle.position;
-				// shootingRay.direction = weaponNozzle.forward;
-				// RaycastHit hit;
-				// if (Physics.Raycast(shootingRay, out hit, maxRange))
-				// {
-				// 	hit.
-				// }
-                Vector3 directionVector = weaponNozzle.forward;
-                directionVector.Scale(new Vector3(100, 100, 100));
-                Debug.DrawRay(weaponNozzle.position, directionVector, shotColor, 0.25f, true);
+                shootingRay.origin = weaponNozzle.position;
+				shootingRay.direction = weaponNozzle.forward;
+				RaycastHit hit;
+				Vector3 vectorTowardsHit;
+				if (Physics.Raycast(shootingRay, out hit, maxRange))
+				{
+					vectorTowardsHit = hit.point - weaponNozzle.position;
+				}
+				else
+				{
+                    vectorTowardsHit = weaponNozzle.position + weaponNozzle.forward * maxRange;
+				}
+                Debug.DrawRay(weaponNozzle.position, vectorTowardsHit, shotColor, 0.25f, true);
 #endif
 
                 yield return new WaitForSeconds(delayBetweenShots);
@@ -142,8 +157,79 @@ public class Weapon : MonoBehaviour
     }
 
     // Network functions.
-    public void ShootOnServer(Vector3 position, Vector3 direction)
+	[Command]
+    private void CmdShootOnServer(Vector3 position, Vector3 direction)
     {
-        // Inform server a shot was fired on this line.
+		RaycastHit hit;
+        shootingRay.origin = position;
+		shootingRay.direction = direction;
+		if (Physics.Raycast(shootingRay, out hit, maxRange))
+		{
+			// Hit something.
+			// Check what we hit.
+			if (hit.transform.root.CompareTag("Player"))
+			{
+				// hit.transform.GetComponent<PlayerHealth>();
+				// Reduce health.
+
+				// Play shot and human body impact FX.
+				RpcShot(HitType.Human);
+			}
+			else if (hit.transform.root.CompareTag("Alien"))
+			{
+                // hit.transform.GetComponent<PlayerHealth>();
+                // Reduce health.
+
+                // Play shot and alien body impact FX.
+                RpcShot(HitType.Alien);
+            }
+			else
+			{
+                // Play shot and object impact FX.
+                RpcShot(HitType.Wall);
+			}
+		}
+		else
+		{
+            // Didn't hit anything.
+            // Play shot FX.
+            RpcShot(HitType.None);
+		}
     }
+
+	[Command]
+	private void CmdReloadOnServer()
+	{
+        RpcReload();
+	}
+
+	[ClientRpc]
+	private void RpcReload()
+    {
+        MyAudioSource.PlayOneShot(reloadingSound);
+		// Play reloading animation.
+	}
+
+	[ClientRpc]
+	private void RpcShot(HitType hitType)
+	{
+        MyAudioSource.PlayOneShot(shootingSounds[Random.Range(0, shootingSounds.Length - 1)]);
+		// Instantiate muzzle flash.
+
+		switch (hitType)
+        {
+            case HitType.Human:
+                // Instantiate human blood FX.
+                break;
+            case HitType.Alien:
+                // Instantiate alien blood FX.
+                break;
+            case HitType.Wall:
+                // Instantiate wall impact FX.
+                break;
+            case HitType.None:
+				// Hot nothing, so no FX.
+                break;
+		}
+	}
 }
