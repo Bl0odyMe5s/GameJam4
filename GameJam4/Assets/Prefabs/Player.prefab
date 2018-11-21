@@ -1512,7 +1512,9 @@ MonoBehaviour:
   damage: 2
   maxDeviationAngle: 1
   muzzleFlashDuration: 0.05
-  maxMuzzleFlashOffset: 0.05
+  maxMuzzleFlashOffset: 0.3
+  fireLineWidth: 0.05
+  fireLineFadeTime: 0.05
   weaponNozzle: {fileID: 4858120617886082}
   shootingRaycastPosition: {fileID: 4975124746563752}
   shotColor: {r: 0.015686274, g: 0.37742585, b: 1, a: 1}
@@ -1524,6 +1526,7 @@ MonoBehaviour:
   wallImpactFX: {fileID: 0}
   muzzleFlashFX: {fileID: 1025198318368770, guid: 66fbca4644d961241b07f4668767332f,
     type: 2}
+  fireLineFX: {fileID: 1678404125236354, guid: 7757acf5f190df4408f711bd0b28c6fe, type: 2}
 --- !u!114 &114969059728437138
 MonoBehaviour:
   m_ObjectHideFlags: 1
