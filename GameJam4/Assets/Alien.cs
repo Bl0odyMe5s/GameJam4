@@ -59,6 +59,7 @@ public class Alien : NetworkBehaviour {
         else
         {
             isWalking = false;
+            rb.velocity = Vector3.zero;
         }
 
     }
