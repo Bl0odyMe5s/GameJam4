@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class Alien : NetworkBehaviour {
 
     private const float MOVE_SPEED = 6;
-    private const float ROTATE_SPEED = 1;
+    private const float ROTATE_SPEED = 3;
     private bool isWalking, isAttacking;
     private Rigidbody rb;
     private Animator animator;
