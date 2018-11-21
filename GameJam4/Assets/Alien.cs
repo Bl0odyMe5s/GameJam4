@@ -11,6 +11,8 @@ public class Alien : NetworkBehaviour {
     private Rigidbody rb;
     private Animator animator;
 
+    public Collider hitbox;
+
     // Use this for initialization
     void Start ()
     {
@@ -26,7 +28,7 @@ public class Alien : NetworkBehaviour {
 
         MoveAlien();
         AnimateAlien(isWalking);
-        Attack();
+        PlayAttackAnimation();
 	}
 
     private void MoveAlien()
@@ -69,12 +71,13 @@ public class Alien : NetworkBehaviour {
        animator.SetBool("isWalking", walkingOrNot);
     }
 
-    private void Attack()
+    private void PlayAttackAnimation()
     {
         //When the alien presses space, start attack.
         if (Input.GetKeyDown(KeyCode.Space))
         {
             isAttacking = true;
+            
         }
 
         animator.SetBool("isAttacking", isAttacking);
@@ -83,5 +86,10 @@ public class Alien : NetworkBehaviour {
     public void EndAttack()
     {
         isAttacking = false;
+    }
+
+    public void DoAttack()
+    {
+        
     }
 }
