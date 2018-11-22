@@ -47,7 +47,7 @@ public class Weapon : NetworkBehaviour
     public GameObject muzzleFlashFX;
 	public GameObject fireLineFX;
 
-    public Hitmarker hitmarker;
+    public FadeRawImage hitmarker;
 
 	public enum HitType { Human, Alien, Wall, None };
 
@@ -192,7 +192,7 @@ public class Weapon : NetworkBehaviour
             else if (hit.transform.root.CompareTag("Alien"))
             {
                 if (hitmarker != null)
-                    hitmarker.RefreshHitmarker();
+                    hitmarker.RefreshAlpha();
 
                 var healthScript = hit.transform.root.GetComponent<PlayerHealth>();
                 CmdHitEnemy(healthScript.gameObject, projectileDamage);

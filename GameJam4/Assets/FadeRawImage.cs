@@ -3,33 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Hitmarker : MonoBehaviour {
+public class FadeRawImage : MonoBehaviour {
 
+    public float maxAlpha = 1;
     public float fadeSpeed;
 
     private float alphaFade;
     private RawImage hitmarkerUI;
 
+    private Color startCol;
+
     private void Start()
     {
         hitmarkerUI = GetComponent<RawImage>();
+        startCol = hitmarkerUI.color;
     }
 
     void Update () {
-		if(alphaFade >= 0)
+        
+
+		if(alphaFade > 0)
         {
             alphaFade -= fadeSpeed * Time.deltaTime;
-            hitmarkerUI.color = new Color(1, 1, 1, alphaFade);
+            startCol.a = alphaFade;
+            hitmarkerUI.color = startCol;
         }
         else
         {
             alphaFade = 0;
-            hitmarkerUI.color = new Color(1, 1, 1, alphaFade);
+            startCol.a = alphaFade;
+            hitmarkerUI.color = startCol;
         }
 	}
 
-    public void RefreshHitmarker()
+    public void RefreshAlpha()
     {
-        alphaFade = 1;
+        alphaFade = maxAlpha;
     }
 }

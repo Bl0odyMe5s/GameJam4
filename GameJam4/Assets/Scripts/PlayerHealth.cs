@@ -14,6 +14,8 @@ public class PlayerHealth : NetworkBehaviour
     [HideInInspector]
     public Text healthText;
 
+    public FadeRawImage damageRect;
+
     public static GameObject winTextObj;
     public static int amountOfMarines;
 
@@ -28,6 +30,11 @@ public class PlayerHealth : NetworkBehaviour
         {
             healthText = GameObject.FindGameObjectWithTag("HealthText").GetComponent<Text>();
         }
+        else
+        {
+            if(damageRect)
+                damageRect.gameObject.SetActive(false);
+        }
 
         if (winTextObj == null)
         {
@@ -37,7 +44,7 @@ public class PlayerHealth : NetworkBehaviour
 
         if(isServer)
         {
-            RpcSetHealth(health);
+            RpcSetHealth(health, false);
         }
     }
 
@@ -76,17 +83,22 @@ public class PlayerHealth : NetworkBehaviour
             }
         }
 
-        RpcSetHealth(health);
+        RpcSetHealth(health, true);
     }
 
     [ClientRpc]
-    void RpcSetHealth(int currentHealth)
+    void RpcSetHealth(int currentHealth, bool isDamage)
     {
         if (currentHealth <= 0)
         {
             currentHealth = 0;
             if(player != null)
                 player.Die();
+        }
+
+        if (isLocalPlayer && isDamage && damageRect != null && damageRect.gameObject.activeInHierarchy)
+        {
+            damageRect.RefreshAlpha();
         }
 
         health = currentHealth;

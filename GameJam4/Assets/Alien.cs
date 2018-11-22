@@ -57,37 +57,35 @@ public class Alien : NetworkBehaviour {
 
     private void MoveAlien()
     {
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
+        isWalking = false;
+
+        if (Input.GetKey(KeyCode.W))
         {
+            rb.velocity = transform.forward * MOVE_SPEED;
             isWalking = true;
-
-            if (Input.GetKey(KeyCode.W))
-            {
-                rb.velocity = transform.forward * MOVE_SPEED;
-            }
-
-            else if (Input.GetKey(KeyCode.S))
-            {
-                rb.velocity = -transform.forward * MOVE_SPEED;
-            }
-
-            if (Input.GetKey(KeyCode.D))
-            {
-                transform.Rotate(Vector3.up, ROTATE_SPEED * Time.deltaTime);
-            }
-
-            else if (Input.GetKey(KeyCode.A))
-            {
-                transform.Rotate(Vector3.up, -ROTATE_SPEED * Time.deltaTime);
-            }
         }
 
+        else if (Input.GetKey(KeyCode.S))
+        {
+            rb.velocity = -transform.forward * MOVE_SPEED;
+            isWalking = true;
+        }
         else
         {
-            isWalking = false;
             rb.velocity = Vector3.zero;
         }
 
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.Rotate(Vector3.up, ROTATE_SPEED * Time.deltaTime);
+            isWalking = true;
+        }
+
+        else if (Input.GetKey(KeyCode.A))
+        {
+            transform.Rotate(Vector3.up, -ROTATE_SPEED * Time.deltaTime);
+            isWalking = true;
+        }
     }
 
     [Command]
@@ -150,7 +148,11 @@ public class Alien : NetworkBehaviour {
 
     public void LocalAttack()
     {
-        Collider[] cols = Physics.OverlapBox(transform.position + transform.forward * 0.5f, Vector3.one);
+        Vector3 centerPos = transform.position + transform.forward * 0.8f + Vector3.up;
+        Vector3 extends = Vector3.one * 1.4f + Vector3.up;
+
+        Collider[] cols = Physics.OverlapBox(centerPos, extends);
+
         for (int i = 0; i < cols.Length; i++)
         {
             Transform theRoot = cols[i].transform.root;
@@ -166,5 +168,12 @@ public class Alien : NetworkBehaviour {
     private void CmdHitEnemy(GameObject enemy)
     {
         enemy.GetComponent<PlayerHealth>().TakeDamage(alienDamage);
+    }
+
+    private void OnDrawGizmos()
+    {
+#if UNITY_EDITOR
+        UnityEditor.Handles.DrawWireCube(transform.position + transform.forward * 0.8f + Vector3.up, Vector3.one * 1.4f + Vector3.up);
+#endif
     }
 }
