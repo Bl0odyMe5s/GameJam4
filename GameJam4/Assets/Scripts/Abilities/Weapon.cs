@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 public class Weapon : NetworkBehaviour
@@ -46,6 +47,8 @@ public class Weapon : NetworkBehaviour
     public GameObject muzzleFlashFX;
 	public GameObject fireLineFX;
 
+    public Hitmarker hitmarker;
+
 	public enum HitType { Human, Alien, Wall, None };
 
 	private bool shooting = false;
@@ -66,10 +69,17 @@ public class Weapon : NetworkBehaviour
 		}
 	}
 
+    private Text ammoText;
+
 	public void Start()
 	{
         currentBulletAmount = bulletsPerMagazine;
-	}
+
+        if (isLocalPlayer)
+        {
+            ammoText = GameObject.FindGameObjectWithTag("AmmoText").GetComponent<Text>();
+        }
+    }
 
 	public void Update()
 	{
@@ -95,6 +105,9 @@ public class Weapon : NetworkBehaviour
 		{
             Reload();
 		}
+
+        if (ammoText != null)
+            ammoText.text = "Ammo: " + currentBulletAmount;
     }
 
     public void Reload()
@@ -131,7 +144,7 @@ public class Weapon : NetworkBehaviour
                     deviation *= Quaternion.AngleAxis(Random.Range(-maxDeviationAngle, maxDeviationAngle), Vector3.right);
 
                     // Shoot a single projectile.
-					CmdShootOnServer(shootingRaycastPosition.position, deviation * shootingRaycastPosition.forward, damage, weaponNozzle.position, weaponNozzle.forward, weaponNozzle.position + Random.insideUnitSphere * maxMuzzleFlashOffset);
+					ShootLocal(shootingRaycastPosition.position, deviation * shootingRaycastPosition.forward, damage, weaponNozzle.position, weaponNozzle.forward, weaponNozzle.position + Random.insideUnitSphere * maxMuzzleFlashOffset);
                     currentBulletAmount--;
 				}
 				else
@@ -154,62 +167,75 @@ public class Weapon : NetworkBehaviour
         yield break;
     }
 
-    // Network functions.
-	[Command]
-    private void CmdShootOnServer(Vector3 position, Vector3 direction, int projectileDamage, Vector3 nozzlePos, Vector3 nozzleForward, Vector3 muzzleFlashPosition)
+    private void ShootLocal(Vector3 position, Vector3 direction, int projectileDamage, Vector3 nozzlePos, Vector3 nozzleForward, Vector3 muzzleFlashPosition)
     {
-		RaycastHit hit;
+        RaycastHit hit;
         shootingRay.origin = position;
-		shootingRay.direction = direction;
+        shootingRay.direction = direction;
 
 #if UNITY_EDITOR
         Vector3 vectorTowardsHit;
 #endif
 
-		if (Physics.Raycast(shootingRay, out hit, maxRange))
-		{
-			// Hit something.
-			// Check what we hit.
-			if (hit.transform.root.CompareTag("Player"))
-			{
-				var healthScript = hit.transform.root.GetComponent<PlayerHealth>();
-                healthScript.TakeDamage(projectileDamage);
-
-				// Play shot and human body impact FX.
-				RpcShot(HitType.Human, hit.point, nozzlePos, muzzleFlashPosition);
-			}
-			else if (hit.transform.root.CompareTag("Alien"))
+        if (Physics.Raycast(shootingRay, out hit, maxRange))
+        {
+            // Hit something.
+            // Check what we hit.
+            if (hit.transform.root.CompareTag("Player"))
             {
                 var healthScript = hit.transform.root.GetComponent<PlayerHealth>();
-                healthScript.TakeDamage(projectileDamage);
+                CmdHitEnemy(healthScript.gameObject, projectileDamage);
+
+                // Play shot and human body impact FX.
+                CmdNotifyServerShot(HitType.Human, hit.point, nozzlePos, muzzleFlashPosition);
+            }
+            else if (hit.transform.root.CompareTag("Alien"))
+            {
+                if (hitmarker != null)
+                    hitmarker.RefreshHitmarker();
+
+                var healthScript = hit.transform.root.GetComponent<PlayerHealth>();
+                CmdHitEnemy(healthScript.gameObject, projectileDamage);
 
                 // Play shot and alien body impact FX.
-                RpcShot(HitType.Alien, hit.point, nozzlePos, muzzleFlashPosition);
+                CmdNotifyServerShot(HitType.Alien, hit.point, nozzlePos, muzzleFlashPosition);
             }
-			else
-			{
+            else
+            {
                 // Play shot and object impact FX.
-                RpcShot(HitType.Wall, hit.point, nozzlePos, muzzleFlashPosition);
-			}
+                CmdNotifyServerShot(HitType.Wall, hit.point, nozzlePos, muzzleFlashPosition);
+            }
 
 #if UNITY_EDITOR
             vectorTowardsHit = hit.point - shootingRaycastPosition.position;
 #endif
         }
-		else
-		{
+        else
+        {
             // Didn't hit anything.
             // Play shot FX.
-            RpcShot(HitType.None, nozzlePos + nozzleForward * maxRange, nozzlePos, muzzleFlashPosition);
-			
+            CmdNotifyServerShot(HitType.None, nozzlePos + nozzleForward * maxRange, nozzlePos, muzzleFlashPosition);
+
 #if UNITY_EDITOR
-			vectorTowardsHit = shootingRaycastPosition.position + shootingRaycastPosition.forward * maxRange;
+            vectorTowardsHit = shootingRaycastPosition.position + shootingRaycastPosition.forward * maxRange;
 #endif
-		}
+        }
 
 #if UNITY_EDITOR
         Debug.DrawRay(shootingRaycastPosition.position, vectorTowardsHit, shotColor, 0.25f, true);
 #endif
+    }
+
+    [Command]
+    private void CmdHitEnemy(GameObject enemy, int damage)
+    {
+        enemy.GetComponent<PlayerHealth>().TakeDamage(damage);
+    }
+
+    [Command]
+    private void CmdNotifyServerShot(HitType hitType, Vector3 hitPoint, Vector3 nozzlePosition, Vector3 muzzleFlashPosition)
+    {
+        RpcShot(hitType, hitPoint, nozzlePosition, muzzleFlashPosition);
     }
 
 	[Command]

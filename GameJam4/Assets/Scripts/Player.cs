@@ -31,7 +31,7 @@ public class Player : NetworkBehaviour
         if (isLocalPlayer)
         {
             mainCamera.SetActive(true);
-            GameObject.FindGameObjectWithTag("HealthText").SetActive(false);
+            GetComponent<PlayerHealth>().healthText.gameObject.SetActive(false);
         }
 
         onToggleShared.Invoke(false);
@@ -63,6 +63,6 @@ public class Player : NetworkBehaviour
     public void Die()
     {
         DisablePlayer();
-        gameObject.SetActive(false);
+        GetComponent<Weapon>().enabled = false;
     }
 }

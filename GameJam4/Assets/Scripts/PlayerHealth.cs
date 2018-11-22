@@ -11,7 +11,8 @@ public class PlayerHealth : NetworkBehaviour
     private Player player;
     int health;
 
-    private Text healthText;
+    [HideInInspector]
+    public Text healthText;
 
     public static GameObject winTextObj;
     public static int amountOfMarines;
@@ -47,12 +48,13 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     [Server]
-    public bool TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
         bool died = false;
 
         if (health <= 0)
-            return died;
+            return;
+
         health -= damage;
         died = health <= 0;
 
@@ -75,8 +77,6 @@ public class PlayerHealth : NetworkBehaviour
         }
 
         RpcSetHealth(health);
-
-        return died;
     }
 
     [ClientRpc]

@@ -7,6 +7,7 @@ TagManager:
   - HealthText
   - Alien
   - WinText
+  - AmmoText
   layers:
   - Default
   - TransparentFX
