@@ -38,7 +38,8 @@ public class Weapon : NetworkBehaviour
 	public Color shotColor = Color.yellow;
 
 	public AudioClip[] shootingSounds;
-	public AudioClip reloadingSound;
+	public AudioClip reloadStartSound;
+	public AudioClip reloadEndSound;
 
     public GameObject humanBloodFX;
     public GameObject alienBloodFX;
@@ -96,39 +97,52 @@ public class Weapon : NetworkBehaviour
 				}
 				else
 				{
-					Reload();
+					ReloadLocal();
 				}
 			}
 		}
 
-		if (Input.GetKeyDown(reloadButton) && currentBulletAmount < bulletsPerMagazine)
+		if (Input.GetKeyDown(reloadButton) && currentBulletAmount < bulletsPerMagazine && !reloading)
 		{
-            Reload();
+            ReloadLocal();
 		}
 
         if (ammoText != null)
             ammoText.text = "Ammo: " + currentBulletAmount;
     }
 
-    public void Reload()
+    public void ReloadLocal()
     {
-        StartCoroutine(ReloadRoutine());
+        CmdReloadOnServer();
         reloading = true;
     }
 
     private IEnumerator ReloadRoutine()
     {
-        CmdReloadOnServer();
-		yield return new WaitForSeconds(reloadTime);
-		currentBulletAmount = bulletsPerMagazine;
+        MyAudioSource.PlayOneShot(reloadStartSound);
+        yield return new WaitForSeconds(reloadTime);
+        MyAudioSource.PlayOneShot(reloadEndSound);
+        currentBulletAmount = bulletsPerMagazine;
         reloading = false;
         yield break;
     }
 
+    [Command]
+    private void CmdReloadOnServer()
+    {
+        RpcReload();
+    }
+
+    [ClientRpc]
+    private void RpcReload()
+    {
+        StartCoroutine(ReloadRoutine());
+    }
+
 	public void Shoot()
 	{
-		StartCoroutine(ShootRoutine());
-		shooting = true;
+        StartCoroutine(ShootRoutine());
+        shooting = true;
     }
 
     private IEnumerator ShootRoutine()
@@ -237,19 +251,6 @@ public class Weapon : NetworkBehaviour
     {
         RpcShot(hitType, hitPoint, nozzlePosition, muzzleFlashPosition);
     }
-
-	[Command]
-	private void CmdReloadOnServer()
-	{
-        RpcReload();
-	}
-
-	[ClientRpc]
-	private void RpcReload()
-    {
-        MyAudioSource.PlayOneShot(reloadingSound);
-		// Play reloading animation.
-	}
 
 	[ClientRpc]
 	private void RpcShot(HitType hitType, Vector3 hitPoint, Vector3 nozzlePosition, Vector3 muzzleFlashPosition)
