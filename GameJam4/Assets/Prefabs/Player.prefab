@@ -159,6 +159,7 @@ GameObject:
   - component: {fileID: 114605574761942930}
   - component: {fileID: 114418903857085468}
   - component: {fileID: 114839705601955512}
+  - component: {fileID: 114257209528464560}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1104,6 +1105,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAlpha: 0.5
   fadeSpeed: 2
+--- !u!114 &114257209528464560
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1388440106233492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fc299ef5c6ef94d92868ad08f35edd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlowColor: {r: 1, g: 0, b: 0, a: 1}
+  LerpFactor: 10
 --- !u!114 &114285929590830924
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1579,7 +1593,7 @@ MonoBehaviour:
   reloadTime: 0.5
   bulletsPerMagazine: 60
   maxRange: 1000
-  damage: 2
+  damage: 3
   maxDeviationAngle: 1
   muzzleFlashDuration: 0.035
   maxMuzzleFlashOffset: 0.35

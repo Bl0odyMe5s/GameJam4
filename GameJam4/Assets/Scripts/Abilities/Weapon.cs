@@ -170,7 +170,8 @@ public class Weapon : NetworkBehaviour
 					yield break;
 				}
 
-                yield return new WaitForSeconds(delayBetweenShots);
+                if (delayBetweenShots > 0)
+                    yield return new WaitForSeconds(delayBetweenShots);
             }
 
             // Skip delay on final volley.
@@ -204,6 +205,7 @@ public class Weapon : NetworkBehaviour
                 CmdHitEnemy(healthScript.gameObject, projectileDamage);
 
                 // Play shot and human body impact FX.
+                ShootEffect(HitType.Human, hit.point, hit.normal, nozzlePos, muzzleFlashPosition);
                 CmdNotifyServerShot(HitType.Human, hit.point, hit.normal, nozzlePos, muzzleFlashPosition);
             }
             else if (hit.transform.root.CompareTag("Alien"))
@@ -215,11 +217,13 @@ public class Weapon : NetworkBehaviour
                 CmdHitEnemy(healthScript.gameObject, projectileDamage);
 
                 // Play shot and alien body impact FX.
+                ShootEffect(HitType.Alien, hit.point, hit.normal, nozzlePos, muzzleFlashPosition);
                 CmdNotifyServerShot(HitType.Alien, hit.point, hit.normal, nozzlePos, muzzleFlashPosition);
             }
             else
             {
                 // Play shot and object impact FX.
+                ShootEffect(HitType.Wall, hit.point, hit.normal, nozzlePos, muzzleFlashPosition);
                 CmdNotifyServerShot(HitType.Wall, hit.point, hit.normal, nozzlePos, muzzleFlashPosition);
             }
 
@@ -231,7 +235,7 @@ public class Weapon : NetworkBehaviour
         {
             // Didn't hit anything.
             // Play shot FX.
-            // Never happens.
+            ShootEffect(HitType.None, nozzlePos + nozzleForward * maxRange, hit.normal, nozzlePos, muzzleFlashPosition);
             CmdNotifyServerShot(HitType.None, nozzlePos + nozzleForward * maxRange, hit.normal, nozzlePos, muzzleFlashPosition);
 
 #if UNITY_EDITOR
@@ -259,22 +263,28 @@ public class Weapon : NetworkBehaviour
 	[ClientRpc]
 	private void RpcShot(HitType hitType, Vector3 hitPoint, Vector3 hitAngle, Vector3 nozzlePosition, Vector3 muzzleFlashPosition)
 	{
+        if (!isLocalPlayer)
+            ShootEffect(hitType, hitPoint, hitAngle, nozzlePosition, muzzleFlashPosition);
+	}
+
+    private void ShootEffect(HitType hitType, Vector3 hitPoint, Vector3 hitAngle, Vector3 nozzlePosition, Vector3 muzzleFlashPosition)
+    {
         MyAudioSource.PlayOneShot(shootingSounds[Random.Range(0, shootingSounds.Length)]);
         var muzzleFlashObject = Instantiate(muzzleFlashFX, muzzleFlashPosition, Quaternion.identity);
         muzzleFlashObject.GetComponent<MuzzleFlash>().InitializeLight(shotColor, muzzleFlashDuration);
 
-		if (hitType == HitType.None)
-		{
-			// Hit nothing.
-		}
-		else
-		{
+        if (hitType == HitType.None)
+        {
+            // Hit nothing.
+        }
+        else
+        {
             // Hit something.
             var fireLine = Instantiate(fireLineFX, nozzlePosition, Quaternion.identity);
             fireLine.GetComponent<FireLine>().InitializeLine(shotColor, nozzlePosition, hitPoint, fireLineWidth, fireLineFadeTime);
-		}
+        }
 
-		switch (hitType)
+        switch (hitType)
         {
             case HitType.Human:
                 // Instantiate human blood FX.
@@ -291,8 +301,8 @@ public class Weapon : NetworkBehaviour
                 // Instantiate(wallImpactFX, hitPoint, Quaternion.identity);
                 break;
             case HitType.None:
-				// Hit nothing, so no FX.
+                // Hit nothing, so no FX.
                 break;
-		}
-	}
+        }
+    }
 }
