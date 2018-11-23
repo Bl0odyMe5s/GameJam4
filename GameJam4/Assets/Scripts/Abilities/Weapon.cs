@@ -45,6 +45,9 @@ public class Weapon : NetworkBehaviour
     public GameObject alienBloodFX;
     public GameObject wallImpactFX;
 
+    public GameObject humanBloodDecal;
+    public GameObject alienBloodDecal;
+
     public GameObject muzzleFlashFX;
 	public GameObject fireLineFX;
 
@@ -201,7 +204,7 @@ public class Weapon : NetworkBehaviour
                 CmdHitEnemy(healthScript.gameObject, projectileDamage);
 
                 // Play shot and human body impact FX.
-                CmdNotifyServerShot(HitType.Human, hit.point, nozzlePos, muzzleFlashPosition);
+                CmdNotifyServerShot(HitType.Human, hit.point, hit.normal, nozzlePos, muzzleFlashPosition);
             }
             else if (hit.transform.root.CompareTag("Alien"))
             {
@@ -212,12 +215,12 @@ public class Weapon : NetworkBehaviour
                 CmdHitEnemy(healthScript.gameObject, projectileDamage);
 
                 // Play shot and alien body impact FX.
-                CmdNotifyServerShot(HitType.Alien, hit.point, nozzlePos, muzzleFlashPosition);
+                CmdNotifyServerShot(HitType.Alien, hit.point, hit.normal, nozzlePos, muzzleFlashPosition);
             }
             else
             {
                 // Play shot and object impact FX.
-                CmdNotifyServerShot(HitType.Wall, hit.point, nozzlePos, muzzleFlashPosition);
+                CmdNotifyServerShot(HitType.Wall, hit.point, hit.normal, nozzlePos, muzzleFlashPosition);
             }
 
 #if UNITY_EDITOR
@@ -228,7 +231,8 @@ public class Weapon : NetworkBehaviour
         {
             // Didn't hit anything.
             // Play shot FX.
-            CmdNotifyServerShot(HitType.None, nozzlePos + nozzleForward * maxRange, nozzlePos, muzzleFlashPosition);
+            // Never happens.
+            CmdNotifyServerShot(HitType.None, nozzlePos + nozzleForward * maxRange, hit.normal, nozzlePos, muzzleFlashPosition);
 
 #if UNITY_EDITOR
             vectorTowardsHit = shootingRaycastPosition.position + shootingRaycastPosition.forward * maxRange;
@@ -247,13 +251,13 @@ public class Weapon : NetworkBehaviour
     }
 
     [Command]
-    private void CmdNotifyServerShot(HitType hitType, Vector3 hitPoint, Vector3 nozzlePosition, Vector3 muzzleFlashPosition)
+    private void CmdNotifyServerShot(HitType hitType, Vector3 hitPoint, Vector3 hitAngle, Vector3 nozzlePosition, Vector3 muzzleFlashPosition)
     {
-        RpcShot(hitType, hitPoint, nozzlePosition, muzzleFlashPosition);
+        RpcShot(hitType, hitPoint, hitAngle, nozzlePosition, muzzleFlashPosition);
     }
 
 	[ClientRpc]
-	private void RpcShot(HitType hitType, Vector3 hitPoint, Vector3 nozzlePosition, Vector3 muzzleFlashPosition)
+	private void RpcShot(HitType hitType, Vector3 hitPoint, Vector3 hitAngle, Vector3 nozzlePosition, Vector3 muzzleFlashPosition)
 	{
         MyAudioSource.PlayOneShot(shootingSounds[Random.Range(0, shootingSounds.Length)]);
         var muzzleFlashObject = Instantiate(muzzleFlashFX, muzzleFlashPosition, Quaternion.identity);
@@ -274,11 +278,13 @@ public class Weapon : NetworkBehaviour
         {
             case HitType.Human:
                 // Instantiate human blood FX.
-				// Instantiate(humanBloodFX, hitPoint, Quaternion.identity);
+				Instantiate(humanBloodFX, hitPoint, Quaternion.LookRotation(hitAngle));
+                Instantiate(humanBloodDecal, new Vector3(hitPoint.x, Random.Range(0, 1000) / 1000000f, hitPoint.z), Quaternion.Euler(90, Random.Range(0, 360), 0));
                 break;
             case HitType.Alien:
                 // Instantiate alien blood FX.
-                // Instantiate(alienBloodFX, hitPoint, Quaternion.identity);
+                Instantiate(alienBloodFX, hitPoint, Quaternion.LookRotation(hitAngle));
+                Instantiate(alienBloodDecal, new Vector3(hitPoint.x, Random.Range(0, 1000) / 1000000f, hitPoint.z), Quaternion.Euler(90, Random.Range(0, 360), 0));
                 break;
             case HitType.Wall:
                 // Instantiate wall impact FX.

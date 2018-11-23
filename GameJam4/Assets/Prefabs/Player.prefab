@@ -842,11 +842,11 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 1.1
   MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -854,10 +854,19 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
+      time: 0.002
+      value: 0.22410583
       inSlope: 0
       outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.48326194
+      value: 0.19383207
+      inSlope: 0.06491276
+      outSlope: 0.06491276
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
@@ -865,12 +874,12 @@ AudioSource:
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -1.002004
+      outSlope: -1.002004
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -1567,7 +1576,7 @@ MonoBehaviour:
   numberOfVolleys: 1
   delayBetweenShots: 0.06
   delayBetweenVolleys: 0
-  reloadTime: 0.8
+  reloadTime: 0.5
   bulletsPerMagazine: 60
   maxRange: 1000
   damage: 2
@@ -1586,9 +1595,15 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ae3b3cf92b05a924db247e49b16f67cb, type: 3}
   reloadStartSound: {fileID: 8300000, guid: 27485725018a6344888d445c1979ac8b, type: 3}
   reloadEndSound: {fileID: 8300000, guid: 7f89d732b4b0f424b82acb1810b5899e, type: 3}
-  humanBloodFX: {fileID: 0}
-  alienBloodFX: {fileID: 0}
+  humanBloodFX: {fileID: 1989859271468662, guid: a930d533149f7af46b58b412710a6418,
+    type: 2}
+  alienBloodFX: {fileID: 1293676724849204, guid: 0d2a72fa157d08b49bc15274bb9affe8,
+    type: 2}
   wallImpactFX: {fileID: 0}
+  humanBloodDecal: {fileID: 1498173577061828, guid: fa2b9d871b43d26449a0a30ead8bff34,
+    type: 2}
+  alienBloodDecal: {fileID: 1491404849494594, guid: 0cc8135681fcf7947a31f68ba19ab168,
+    type: 2}
   muzzleFlashFX: {fileID: 1025198318368770, guid: 66fbca4644d961241b07f4668767332f,
     type: 2}
   fireLineFX: {fileID: 1678404125236354, guid: 7757acf5f190df4408f711bd0b28c6fe, type: 2}
