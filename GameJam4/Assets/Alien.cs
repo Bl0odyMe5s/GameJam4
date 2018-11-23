@@ -6,15 +6,23 @@ using UnityEngine.Networking;
 public class Alien : NetworkBehaviour {
     public int alienDamage = 40;
 
-    private const float MOVE_SPEED = 8;
+    public float moveSpeed = 8;
+    public float sneakSpeed = 4;
+    private float currentSpeed;
     private const float ROTATE_SPEED = 180;
     private const float SOUND_COOLDOWN = 12;
+
+    public Material alienMat;
+    public float sneakAlpha = 0.3f;
 
     [SyncVar]
     private bool isWalking;
 
     [SyncVar(hook ="OnAttackChange")]
     private bool isAttacking;
+
+    [SyncVar(hook = "OnSneakChange")]
+    private bool isSneaking;
 
     private float soundTimer, timer;
     private Rigidbody rb;
@@ -33,6 +41,7 @@ public class Alien : NetworkBehaviour {
         if (isLocalPlayer)
         {
             GameObject.FindGameObjectWithTag("AmmoText").SetActive(false);
+            currentSpeed = moveSpeed;
         }
     }
 	
@@ -59,15 +68,31 @@ public class Alien : NetworkBehaviour {
     {
         isWalking = false;
 
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            currentSpeed = sneakSpeed;
+            isSneaking = true;
+            CmdSetSneaking(true);
+            SetSneakAlpha(isSneaking);
+        }
+        
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            currentSpeed = moveSpeed;
+            isSneaking = false;
+            CmdSetSneaking(false);
+            SetSneakAlpha(isSneaking);
+        }
+
         if (Input.GetKey(KeyCode.W))
         {
-            rb.velocity = transform.forward * MOVE_SPEED;
+            rb.velocity = transform.forward * currentSpeed;
             isWalking = true;
         }
 
         else if (Input.GetKey(KeyCode.S))
         {
-            rb.velocity = -transform.forward * MOVE_SPEED;
+            rb.velocity = -transform.forward * currentSpeed;
             isWalking = true;
         }
         else
@@ -89,6 +114,33 @@ public class Alien : NetworkBehaviour {
     }
 
     [Command]
+    private void CmdSetSneaking(bool sneak)
+    {
+        isSneaking = sneak;
+    }
+
+    private void OnSneakChange(bool currentlySneaking)
+    {
+        if (!isLocalPlayer)
+        {
+            isSneaking = currentlySneaking;
+            SetSneakAlpha(currentlySneaking);
+        }
+    }
+
+    private void SetSneakAlpha(bool currentlySneaking)
+    {
+        if (currentlySneaking)
+        {
+            alienMat.SetColor("_Color", new Color(1, 1, 1, sneakAlpha));
+        }
+        else
+        {
+            alienMat.SetColor("_Color", new Color(1, 1, 1, 1));
+        }
+    }
+
+    [Command]
     private void CmdSetAnimationServer(bool walkingOrNot, bool currentlyAttacking)
     {
         isWalking = walkingOrNot;
@@ -103,15 +155,26 @@ public class Alien : NetworkBehaviour {
     private void CheckForAttack()
     {
         //When the alien presses space, start attack.
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && !isAttacking && !isSneaking)
         {
             isAttacking = true;
+            AttackEffect(isAttacking);
         }
     }
 
     private void OnAttackChange(bool currentlyAttacking)
     {
-        if(currentlyAttacking)
+        if (isLocalPlayer)
+        {
+            return;
+        }
+
+        AttackEffect(currentlyAttacking);
+    }
+
+    private void AttackEffect(bool currentlyAttacking)
+    {
+        if (currentlyAttacking && !prevIsAttacking)
             hitSound.PlayOneShot(hitSound.clip, Random.Range(0.5f, 1));
 
         animator.SetBool("isAttacking", currentlyAttacking);
@@ -119,6 +182,9 @@ public class Alien : NetworkBehaviour {
 
     private void PlaySounds()
     {
+        if (isSneaking)
+            return;
+
         soundTimer += Time.deltaTime;
 
         int randomDecision = Random.Range(0, 1);
@@ -138,6 +204,7 @@ public class Alien : NetworkBehaviour {
     public void EndAttack()
     {
         isAttacking = false;
+        animator.SetBool("isAttacking", isAttacking);
     }
 
     public void DoAttack()
