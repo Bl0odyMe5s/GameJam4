@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 222795831206862194}
   - component: {fileID: 114146198432039930}
   - component: {fileID: 114224120147943916}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: RawImage (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 224419668183621396}
   - component: {fileID: 222431013064689722}
   - component: {fileID: 114753124855009708}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 114418903857085468}
   - component: {fileID: 114839705601955512}
   - component: {fileID: 114257209528464560}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 222972611031873680}
   - component: {fileID: 114949573465125188}
   - component: {fileID: 114289176779951412}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: RawImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 223195977177289420}
   - component: {fileID: 114116451986196516}
   - component: {fileID: 114563405761464620}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: AimCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1595,6 +1595,7 @@ MonoBehaviour:
   maxRange: 1000
   damage: 3
   maxDeviationAngle: 1
+  bloodDeviationAngle: 10
   muzzleFlashDuration: 0.035
   maxMuzzleFlashOffset: 0.35
   fireLineWidth: 0.025

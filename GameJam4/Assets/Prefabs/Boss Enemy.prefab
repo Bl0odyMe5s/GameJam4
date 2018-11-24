@@ -1789,6 +1789,11 @@ MonoBehaviour:
   walkingSound: {fileID: 82444290981760672}
   roarSound: {fileID: 82086515980516550}
   hitSound: {fileID: 82482440169570974}
+  humanBloodFX: {fileID: 1989859271468662, guid: a930d533149f7af46b58b412710a6418,
+    type: 2}
+  humanBloodDecal: {fileID: 1498173577061828, guid: fa2b9d871b43d26449a0a30ead8bff34,
+    type: 2}
+  humanBloodDeviationAngle: 10
 --- !u!114 &114530375806824070
 MonoBehaviour:
   m_ObjectHideFlags: 1

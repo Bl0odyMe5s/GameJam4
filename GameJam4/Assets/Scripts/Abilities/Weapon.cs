@@ -298,7 +298,7 @@ public class Weapon : NetworkBehaviour
                 randomKek = Random.Range(1, 4);
                 for (int i = 0; i < randomKek; i++)
                 {
-                    GameObject groundBlood = Instantiate(humanBloodDecal, new Vector3(hitPoint.x + Random.Range(-groundSpread, groundSpread), Random.Range(0, 1000) / 10000f, hitPoint.z + Random.Range(-groundSpread, groundSpread)), Quaternion.Euler(90, Random.Range(0, 360), 0));
+                    GameObject groundBlood = Instantiate(humanBloodDecal, new Vector3(hitPoint.x + Random.Range(-groundSpread, groundSpread), Random.Range(0, 1000) / 100000f, hitPoint.z + Random.Range(-groundSpread, groundSpread)), Quaternion.Euler(90, Random.Range(0, 360), 0));
                     groundBlood.transform.localScale *= Random.Range(0.6f, 1.1f);
                 }
 
@@ -310,17 +310,15 @@ public class Weapon : NetworkBehaviour
                     deviation *= Quaternion.AngleAxis(Random.Range(-bloodDeviationAngle, bloodDeviationAngle), Vector3.right);
 
                     Vector3 bloodDir = deviation * hitAngle;
-                    Ray bloodRay = new Ray(hitPoint, hitAngle);
+                    Ray bloodRay = new Ray(hitPoint, bloodDir);
                     int layer_mask = LayerMask.GetMask("BloodRaycast");
 
                     if (Physics.Raycast(bloodRay, out hit, 1.5f, layer_mask))
                     {
-                        Debug.Log(hit.collider.gameObject.tag);
-                        Debug.DrawLine(hitPoint, hit.point, Color.red, 5f);
                         if (hit.collider.gameObject.CompareTag("Wall"))
                         {
                             GameObject blood = Instantiate(humanBloodDecal, hit.point, Quaternion.LookRotation(-hit.normal));
-                            blood.transform.position += hit.normal * (Random.Range(0, 1000) / 10000f);
+                            blood.transform.position += hit.normal * (Random.Range(0, 1000) / 100000f);
                             blood.transform.Rotate(blood.transform.forward, Random.Range(0, 360), Space.World);
                             blood.transform.localScale *= Random.Range(0.6f, 1.1f);
                         }
@@ -335,7 +333,7 @@ public class Weapon : NetworkBehaviour
                 randomKek = Random.Range(1, 4);
                 for (int i = 0; i < randomKek; i++)
                 {
-                    GameObject groundBlood = Instantiate(alienBloodDecal, new Vector3(hitPoint.x + Random.Range(-groundSpread, groundSpread), Random.Range(0, 1000) / 10000f, hitPoint.z + Random.Range(-groundSpread, groundSpread)), Quaternion.Euler(90, Random.Range(0, 360), 0));
+                    GameObject groundBlood = Instantiate(alienBloodDecal, new Vector3(hitPoint.x + Random.Range(-groundSpread, groundSpread), Random.Range(0, 1000) / 100000f, hitPoint.z + Random.Range(-groundSpread, groundSpread)), Quaternion.Euler(90, Random.Range(0, 360), 0));
                     groundBlood.transform.localScale *= Random.Range(0.6f, 1.1f);
                 }
 
@@ -357,7 +355,7 @@ public class Weapon : NetworkBehaviour
                         if (hit.collider.gameObject.CompareTag("Wall"))
                         {
                             GameObject blood = Instantiate(alienBloodDecal, hit.point, Quaternion.LookRotation(-hit.normal));
-                            blood.transform.position += hit.normal * (Random.Range(0, 1000) / 10000f);
+                            blood.transform.position += hit.normal * (Random.Range(0, 1000) / 100000f);
                             blood.transform.Rotate(blood.transform.forward, Random.Range(0, 360), Space.World);
                             blood.transform.localScale *= Random.Range(0.6f, 1.1f);
                         }

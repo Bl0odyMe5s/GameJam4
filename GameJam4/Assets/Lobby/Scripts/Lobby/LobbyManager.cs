@@ -300,6 +300,13 @@ namespace Prototype.NetworkLobby
             return obj;
         }
 
+        public override void OnLobbyStartServer()
+        {
+            alienIds.Clear();
+
+            base.OnLobbyStartServer();
+        }
+
         public override void OnLobbyServerPlayerRemoved(NetworkConnection conn, short playerControllerId)
         {
             for (int i = 0; i < lobbySlots.Length; ++i)
@@ -408,6 +415,7 @@ namespace Prototype.NetworkLobby
 
             // Choose an alien
             alienId = alienIds[Random.Range(0, alienIds.Count)];
+            Debug.Log("amount of players: " + alienIds.Count);
             PlayerHealth.amountOfMarines = alienIds.Count - 1;
             Debug.Log("Amount of marines: " + PlayerHealth.amountOfMarines);
 

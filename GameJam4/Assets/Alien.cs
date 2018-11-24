@@ -31,6 +31,9 @@ public class Alien : NetworkBehaviour {
     public AudioSource walkingSound, roarSound, hitSound;
 
     private bool prevIsWalking, prevIsAttacking;
+    public GameObject humanBloodFX;
+    public GameObject humanBloodDecal;
+    public float humanBloodDeviationAngle = 20;
 
     // Use this for initialization
     void Start ()
@@ -225,6 +228,16 @@ public class Alien : NetworkBehaviour {
             Transform theRoot = cols[i].transform.root;
             if (theRoot.CompareTag("Player"))
             {
+                int layer_mask = LayerMask.GetMask("Marines");
+                Ray effectRay = new Ray(transform.position, (theRoot.position - transform.position).normalized);
+                RaycastHit rayHit;
+
+                if(Physics.Raycast(effectRay, out rayHit, Mathf.Infinity, layer_mask))
+                {
+                    PlayEnemyHitEffect(rayHit.point, rayHit.normal);
+                    CmdServerHitEffect(rayHit.point, rayHit.normal);
+                }
+
                 PlayerHealth pHealth = theRoot.GetComponent<PlayerHealth>();
                 CmdHitEnemy(pHealth.gameObject);
             }
@@ -235,6 +248,61 @@ public class Alien : NetworkBehaviour {
     private void CmdHitEnemy(GameObject enemy)
     {
         enemy.GetComponent<PlayerHealth>().TakeDamage(alienDamage);
+    }
+
+    [Command]
+    private void CmdServerHitEffect(Vector3 hitPoint, Vector3 hitAngle)
+    {
+        RpcClientHitEffect(hitPoint, hitAngle);
+    }
+    
+    [ClientRpc]
+    private void RpcClientHitEffect(Vector3 hitPoint, Vector3 hitAngle)
+    {
+        if (!isLocalPlayer)
+            PlayEnemyHitEffect(hitPoint, hitAngle);
+    }
+
+    private void PlayEnemyHitEffect(Vector3 hitPoint, Vector3 hitAngle)
+    {
+        // Instantiate human blood FX.
+        Instantiate(humanBloodFX, hitPoint, Quaternion.LookRotation(hitAngle));
+
+        float groundSpread = 0.5f;
+        int randomKek = Random.Range(1, 4);
+
+        for (int i = 0; i < randomKek; i++)
+        {
+            GameObject groundBlood = Instantiate(humanBloodDecal, new Vector3(hitPoint.x + Random.Range(-groundSpread, groundSpread), Random.Range(0, 1000) / 100000f, hitPoint.z + Random.Range(-groundSpread, groundSpread)), Quaternion.Euler(90, Random.Range(0, 360), 0));
+            groundBlood.transform.localScale *= Random.Range(0.6f, 1.1f);
+        }
+
+        for (int i = 0; i < 6; i++)
+        {
+            RaycastHit hit;
+            Quaternion deviation = Quaternion.AngleAxis(Random.Range(-humanBloodDeviationAngle, humanBloodDeviationAngle), Vector3.up);
+
+            Vector3 randomDir = Random.onUnitSphere;
+            if (Mathf.Abs(randomDir.y) == 1)
+                continue;
+
+            randomDir.y = 0;
+            Vector3 bloodDir = deviation * randomDir.normalized;
+
+            Ray bloodRay = new Ray(hitPoint, bloodDir);
+            int layer_mask = LayerMask.GetMask("BloodRaycast");
+
+            if (Physics.Raycast(bloodRay, out hit, 1.5f, layer_mask))
+            {
+                if (hit.collider.gameObject.CompareTag("Wall"))
+                {
+                    GameObject blood = Instantiate(humanBloodDecal, hit.point, Quaternion.LookRotation(-hit.normal));
+                    blood.transform.position += hit.normal * (Random.Range(0, 1000) / 100000f);
+                    blood.transform.Rotate(blood.transform.forward, Random.Range(0, 360), Space.World);
+                    blood.transform.localScale *= Random.Range(0.6f, 1.1f);
+                }
+            }
+        }
     }
 
     private void OnDrawGizmos()
