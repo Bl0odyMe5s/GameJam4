@@ -82,7 +82,7 @@ public class PlayerHealth : NetworkBehaviour
                 StartCoroutine(ReturnToLobby(4f));
             }
         }
-
+        Debug.Log("hit");
         RpcSetHealth(health, true);
     }
 
@@ -102,9 +102,12 @@ public class PlayerHealth : NetworkBehaviour
         }
 
         health = currentHealth;
+    }
 
-        if(healthText != null)
-            healthText.text = "Health: " + currentHealth;
+    private void OnGUI()
+    {
+        if (healthText != null)
+            healthText.text = "Health: " + health;
     }
 
     [Server]

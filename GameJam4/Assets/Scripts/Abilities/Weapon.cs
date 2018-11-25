@@ -350,7 +350,6 @@ public class Weapon : NetworkBehaviour
 
                     if (Physics.Raycast(bloodRay, out hit, 1.5f, layer_mask))
                     {
-                        Debug.Log(hit.collider.gameObject.tag);
                         Debug.DrawLine(hitPoint, hit.point, Color.red, 5f);
                         if (hit.collider.gameObject.CompareTag("Wall"))
                         {

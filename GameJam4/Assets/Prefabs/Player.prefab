@@ -160,6 +160,7 @@ GameObject:
   - component: {fileID: 114418903857085468}
   - component: {fileID: 114839705601955512}
   - component: {fileID: 114257209528464560}
+  - component: {fileID: 114442828387757186}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -1241,6 +1242,17 @@ MonoBehaviour:
   maxHealth: 100
   healthText: {fileID: 0}
   damageRect: {fileID: 114224120147943916}
+--- !u!114 &114442828387757186
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1388440106233492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d83059753a6cb9499e82e6dd14e9dd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114472148167511750
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1590,10 +1602,10 @@ MonoBehaviour:
   numberOfVolleys: 1
   delayBetweenShots: 0.06
   delayBetweenVolleys: 0
-  reloadTime: 0.5
-  bulletsPerMagazine: 60
+  reloadTime: 1
+  bulletsPerMagazine: 30
   maxRange: 1000
-  damage: 3
+  damage: 4
   maxDeviationAngle: 1
   bloodDeviationAngle: 10
   muzzleFlashDuration: 0.035

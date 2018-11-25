@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -27,13 +28,19 @@ public class Alien : NetworkBehaviour {
     private float soundTimer, timer;
     private Rigidbody rb;
     private Animator animator;
+    public Animator outlineAnim;
 
-    public AudioSource walkingSound, roarSound, hitSound;
+    public AudioSource walkingSound, roarSound, hitSound, boneSound;
 
     private bool prevIsWalking, prevIsAttacking;
     public GameObject humanBloodFX;
     public GameObject humanBloodDecal;
     public float humanBloodDeviationAngle = 20;
+
+    private bool mouseLocked;
+    public float knockbackForce = 1f;
+
+    private bool hasDoneDamage;
 
     // Use this for initialization
     void Start ()
@@ -45,6 +52,8 @@ public class Alien : NetworkBehaviour {
         {
             GameObject.FindGameObjectWithTag("AmmoText").SetActive(false);
             currentSpeed = moveSpeed;
+            mouseLocked = true;
+            CheckMouseLock();
         }
     }
 	
@@ -55,6 +64,12 @@ public class Alien : NetworkBehaviour {
         {
             MoveAlien();
             CheckForAttack();
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                mouseLocked = !mouseLocked;
+                CheckMouseLock();
+            }
 
             if (prevIsWalking != isWalking || prevIsAttacking != isAttacking)
                 CmdSetAnimationServer(isWalking, isAttacking);
@@ -67,8 +82,23 @@ public class Alien : NetworkBehaviour {
         prevIsAttacking = isAttacking;
     }
 
+    private void CheckMouseLock()
+    {
+        if(mouseLocked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+
     private void MoveAlien()
     {
+        rb.velocity = Vector3.zero;
         isWalking = false;
 
         if(Input.GetKeyDown(KeyCode.LeftShift))
@@ -89,29 +119,33 @@ public class Alien : NetworkBehaviour {
 
         if (Input.GetKey(KeyCode.W))
         {
-            rb.velocity = transform.forward * currentSpeed;
+            rb.velocity += transform.forward * currentSpeed;
             isWalking = true;
         }
 
         else if (Input.GetKey(KeyCode.S))
         {
-            rb.velocity = -transform.forward * currentSpeed;
+            rb.velocity += -transform.forward * currentSpeed * 0.75f;
             isWalking = true;
-        }
-        else
-        {
-            rb.velocity = Vector3.zero;
         }
 
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Rotate(Vector3.up, ROTATE_SPEED * Time.deltaTime);
+            rb.velocity += transform.right * currentSpeed / 2;
             isWalking = true;
         }
 
         else if (Input.GetKey(KeyCode.A))
         {
-            transform.Rotate(Vector3.up, -ROTATE_SPEED * Time.deltaTime);
+            rb.velocity += -transform.right * currentSpeed * 0.5f;
+            isWalking = true;
+        }
+
+        rb.velocity = Vector3.ClampMagnitude(rb.velocity, currentSpeed);
+
+        if (Mathf.Abs(Input.GetAxis("Mouse X")) > 0.1)
+        {
+            transform.Rotate(Vector3.up, ROTATE_SPEED * Time.deltaTime * Input.GetAxis("Mouse X"));
             isWalking = true;
         }
     }
@@ -153,12 +187,14 @@ public class Alien : NetworkBehaviour {
     private void AnimateAlien(bool walkingOrNot, bool currentlyAttacking)
     {
         animator.SetBool("isWalking", walkingOrNot);
+        if(outlineAnim.isActiveAndEnabled)
+            outlineAnim.SetBool("isWalking", walkingOrNot);
     }
 
     private void CheckForAttack()
     {
         //When the alien presses space, start attack.
-        if (Input.GetKeyDown(KeyCode.Space) && !isAttacking && !isSneaking)
+        if (Input.GetMouseButtonDown(0) && !isAttacking && !isSneaking)
         {
             isAttacking = true;
             AttackEffect(isAttacking);
@@ -178,9 +214,11 @@ public class Alien : NetworkBehaviour {
     private void AttackEffect(bool currentlyAttacking)
     {
         if (currentlyAttacking && !prevIsAttacking)
-            hitSound.PlayOneShot(hitSound.clip, Random.Range(0.5f, 1));
+            hitSound.PlayOneShot(hitSound.clip);
 
         animator.SetBool("isAttacking", currentlyAttacking);
+        if (outlineAnim.isActiveAndEnabled)
+            outlineAnim.SetBool("isAttacking", currentlyAttacking);
     }
 
     private void PlaySounds()
@@ -193,13 +231,13 @@ public class Alien : NetworkBehaviour {
         int randomDecision = Random.Range(0, 1);
         if (soundTimer >= SOUND_COOLDOWN && randomDecision == 0)
         {
-            walkingSound.PlayOneShot(walkingSound.clip, Random.Range(0.5f, 1));
+            walkingSound.PlayOneShot(walkingSound.clip);
             soundTimer = 0;
         }
 
         else if (soundTimer >= SOUND_COOLDOWN && randomDecision == 1)
         {
-            roarSound.PlayOneShot(roarSound.clip, Random.Range(0.5f, 1));
+            roarSound.PlayOneShot(roarSound.clip);
             soundTimer = 0;
         }
     }
@@ -207,13 +245,19 @@ public class Alien : NetworkBehaviour {
     public void EndAttack()
     {
         isAttacking = false;
+        hasDoneDamage = false;
         animator.SetBool("isAttacking", isAttacking);
+        if (outlineAnim.isActiveAndEnabled)
+            outlineAnim.SetBool("isAttacking", isAttacking);
     }
 
     public void DoAttack()
     {
-        if (isLocalPlayer)
+        if (isLocalPlayer && !hasDoneDamage)
+        {
+            hasDoneDamage = true;
             LocalAttack();
+        }
     }
 
     public void LocalAttack()
@@ -234,8 +278,8 @@ public class Alien : NetworkBehaviour {
 
                 if(Physics.Raycast(effectRay, out rayHit, Mathf.Infinity, layer_mask))
                 {
-                    PlayEnemyHitEffect(rayHit.point, rayHit.normal);
-                    CmdServerHitEffect(rayHit.point, rayHit.normal);
+                    PlayEnemyHitEffect(theRoot.gameObject, transform.position, rayHit.point, rayHit.normal);
+                    CmdServerHitEffect(theRoot.gameObject, transform.position, rayHit.point, rayHit.normal);
                 }
 
                 PlayerHealth pHealth = theRoot.GetComponent<PlayerHealth>();
@@ -251,19 +295,19 @@ public class Alien : NetworkBehaviour {
     }
 
     [Command]
-    private void CmdServerHitEffect(Vector3 hitPoint, Vector3 hitAngle)
+    private void CmdServerHitEffect(GameObject enemy, Vector3 origin, Vector3 hitPoint, Vector3 hitAngle)
     {
-        RpcClientHitEffect(hitPoint, hitAngle);
+        RpcClientHitEffect(enemy, origin, hitPoint, hitAngle);
     }
     
     [ClientRpc]
-    private void RpcClientHitEffect(Vector3 hitPoint, Vector3 hitAngle)
+    private void RpcClientHitEffect(GameObject enemy, Vector3 origin, Vector3 hitPoint, Vector3 hitAngle)
     {
         if (!isLocalPlayer)
-            PlayEnemyHitEffect(hitPoint, hitAngle);
+            PlayEnemyHitEffect(enemy, origin, hitPoint, hitAngle);
     }
 
-    private void PlayEnemyHitEffect(Vector3 hitPoint, Vector3 hitAngle)
+    private void PlayEnemyHitEffect(GameObject enemy, Vector3 origin, Vector3 hitPoint, Vector3 hitAngle)
     {
         // Instantiate human blood FX.
         Instantiate(humanBloodFX, hitPoint, Quaternion.LookRotation(hitAngle));
@@ -302,6 +346,15 @@ public class Alien : NetworkBehaviour {
                     blood.transform.localScale *= Random.Range(0.6f, 1.1f);
                 }
             }
+        }
+
+        boneSound.Play();
+
+        if(enemy.GetComponent<Player>().isLocalPlayer)
+        {
+            Debug.Log("called");
+            Vector3 dir = hitPoint - origin;
+            enemy.GetComponent<KnockBack>().AddImpact(dir, knockbackForce);
         }
     }
 
