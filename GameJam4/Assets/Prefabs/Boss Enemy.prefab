@@ -2963,8 +2963,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   alienDamage: 45
-  moveSpeed: 8
-  sneakSpeed: 4
+  moveSpeed: 6.5
+  sneakSpeed: 3.5
   alienMat: {fileID: 2100000, guid: aad0b27cb219958419f777d18912f1b5, type: 2}
   sneakAlpha: 0.08
   outlineAnim: {fileID: 95372443002814478}
@@ -3079,7 +3079,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c85baa43884fbb4798c13c05367ea8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 120
+  maxHealth: 100
   healthText: {fileID: 0}
   damageRect: {fileID: 0}
 --- !u!114 &114852177835175606
